@@ -5,11 +5,11 @@
 ' main api
 '-------------------------------------------------------------------------------
 '*******************************************************************************
-' GetETCInfoOfJapanHightWay function
+' GetETCUseInfoOfJapanHightWay function
 '   @param nothing
 '   @retval nothing
 '*******************************************************************************
-Function GetETCInfoOfJapanHightWay()
+Function GetETCUseInfoOfJapanHightWay()
   ' create log
   logCreate()
   
@@ -35,12 +35,12 @@ Function GetETCInfoOfJapanHightWay()
   strScriptPath = Replace(WScript.ScriptFullName, WScript.ScriptName, "")
   strSaveFilePath = strScriptPath & targetCurrentYear & targetCurrentMonth & targetCurrentDay
   CreateFolder(strSaveFilePath)
-  CreateFile(strSaveFilePath & DELIM_FOLDER & )
+  CreateFile(strSaveFilePath & DEFINE_DELIM_FOLDER & )
   
   
   ' TODO
   
-  'GetETCInfoOfJapanHightWay = TODO
+  'GetETCUseInfoOfJapanHightWay = TODO
 End Function
 
 
