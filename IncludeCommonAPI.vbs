@@ -19,41 +19,101 @@ Function logOut(logLevel, message)
   Dim timeStr
   Dim logContext
   
-  If logLevel <= logTargetLevel Then
+  If logLevel <= LOG_TARGET_LEVEL Then
     logDatetime = strLogDateTime
     
-    logContext = logDatetime & DEFINE_SPACE & logLevelStrings(logLevel) & DEFINE_SPACE & message & DEFINE_CRLF
+    logContext = logDatetime & DEFINE_SPACE & logLevelStrings(logLevel) & DEFINE_SPACE & message & DefineCrLf
     
-    appendFile(logFilePath, logContext)
+    funcDummy = appendFile(logFilePath, logContext)
   End If
   
-  logContext = Nothing
-  timeStr = Nothing
+  Set logContext = Nothing
+  Set timeStr = Nothing
   
   'logOut = ""
 End Function
 
 '*******************************************************************************
-' logFileCheck
-'   @param logLevel [in] log level
+' logOutFatal
 '   @param message [in] log message
 '   @retval nothing
 '*******************************************************************************
-Function logFileCheck(logLevel, message)
-  Dim timeStr
-  Dim logContext
+Function logOutFatal(message)
+  logReturnValueDummy = logOut(LOG_LEVEL_NUMBER_FATAL, message)
   
+  'logOutFatal = ""
+End Function
+
+'*******************************************************************************
+' logOutError
+'   @param message [in] log message
+'   @retval nothing
+'*******************************************************************************
+Function logOutError(message)
+  logReturnValueDummy = logOut(LOG_LEVEL_NUMBER_ERROR, message)
+  
+  'logOutError = ""
+End Function
+
+'*******************************************************************************
+' logOutWarn
+'   @param message [in] log message
+'   @retval nothing
+'*******************************************************************************
+Function logOutWarn(message)
+  logReturnValueDummy = logOut(LOG_LEVEL_NUMBER_WARN, message)
+  
+  'logOutWarn = ""
+End Function
+
+'*******************************************************************************
+' logOutInfo
+'   @param message [in] log message
+'   @retval nothing
+'*******************************************************************************
+Function logOutInfo(message)
+  logReturnValueDummy = logOut(LOG_LEVEL_NUMBER_INFO, message)
+  
+  'logOutInfo = ""
+End Function
+
+'*******************************************************************************
+' logOutDebug
+'   @param message [in] log message
+'   @retval nothing
+'*******************************************************************************
+Function logOutDebug(message)
+  logReturnValueDummy = logOut(LOG_LEVEL_NUMBER_DEBUG, message)
+  
+  'logOutDebug = ""
+End Function
+
+'*******************************************************************************
+' logOutDetailDebug
+'   @param message [in] log message
+'   @retval nothing
+'*******************************************************************************
+Function logOutDetailDebug(message)
+  logReturnValueDummy = logOut(LOG_LEVEL_NUMBER_DETAIL_DEBUG, message)
+  
+  'logOutDetailDebug = ""
+End Function
+
+'*******************************************************************************
+' logFileCheck
+'   @param nothing
+'   @retval nothing
+'*******************************************************************************
+Function logFileCheck()
   If IsExistFolder(LOG_FOLDER) = true Then
     If IsExistFile(logFilePath) = false Then
       CreateFile(logFilePath)
     End If
   Else
     CreateFolder(LOG_FOLDER)
+    CreateFile(logFilePath)
   End If
-  
-  logContext = Nothing
-  timeStr = Nothing
-  
+    
   'logFileCheck = ""
 End Function
 
@@ -77,7 +137,7 @@ Function CreateFolder(folderPath)
     objFileSys.CreateFolder folderPath
   End If
   
-  objFileSys = Nothing
+  Set objFileSys = Nothing
   
   'CreateFolder = 
 End Function
@@ -94,9 +154,9 @@ Function IsExistFolder(folderPath)
   
   Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
   
-  result objFileSys.FolderExists(folderPath)
+  result = objFileSys.FolderExists(folderPath)
   
-  objFileSys = Nothing
+  Set objFileSys = Nothing
   
   IsExistFolder = result
 End Function
@@ -119,7 +179,7 @@ Function CreateFile(filePath)
   End If
   objFileSys.CreateTextFile filePath
   
-  objFileSys = Nothing
+  Set objFileSys = Nothing
   
   'CreateFolder = 
 End Function
@@ -135,9 +195,9 @@ Function IsExistFile(filePath)
   
   Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
   
-  result objFileSys.FileExists(filePath)
+  result = objFileSys.FileExists(filePath)
   
-  objFileSys = Nothing
+  Set objFileSys = Nothing
   
   IsExistFile = result
 End Function
@@ -148,18 +208,18 @@ End Function
 '   @param context [in] context
 '   @retval nothing
 '*******************************************************************************
-Function AppendFile(filePath)
+Function AppendFile(filePath, context)
   Dim objFileSys
   Dim resStream
   
   Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
-  Set resStream = objFSO.OpenTextFile(filePath, ForAppending)
+  Set resStream = objFileSys.OpenTextFile(filePath, ForAppending)
   
   resStream.Write(context)
   resStream.Close
   
-  resStream = Nothing
-  objFileSys = Nothing
+  Set resStream = Nothing
+  Set objFileSys = Nothing
   
   'AppendFile = 
 End Function
@@ -175,18 +235,18 @@ Function ReadFileAllContext(filePath)
   Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
   If objFileSys.FileExists(filePath) = false Then
     logReturnValueDummy = logOut(logLevelError, "file don't exist: " & filePath)
-    ReadFileAllContext = Nothing
+    Set ReadFileAllContext = Nothing
   Else
     Dim resStream
     Dim resData
     
-    Set resStream = objFSO.OpenTextFile(filePath, ForReading)
+    Set resStream = objFileSys.OpenTextFile(filePath, ForReading)
     
     resData = resStream.ReadAll
     resStream.Close
     
-    resStream = Nothing
-    objFileSys = Nothing
+    Set resStream = Nothing
+    Set objFileSys = Nothing
     
     ReadFileAllContext = resData
   End If
@@ -201,7 +261,7 @@ Function ReadFileAllContextAfterDelete(filePath)
   Dim resData
   
   resData = ReadFileAllContext(filePath)
-  If resData != Nothing Then
+  If resData <> Nothing Then
     DeleteFile(filePath)
   End If
   
@@ -222,7 +282,7 @@ Function DeleteFile(filePath)
     objFileSys.DeleteFile filePath
   End If
   
-  objFileSys = Nothing
+  Set objFileSys = Nothing
   
   'DeleteFile = 
 End Function
@@ -263,5 +323,36 @@ Function DeleteSpace2MoreSpace(targetStrings)
   Next
   
   DeleteSpace2MoreSpace = replaceString
+End Function
+
+'-------------------------------------------------------------------------------
+' object api
+'-------------------------------------------------------------------------------
+'*******************************************************************************
+' DeleteSpace
+'   @param isShowIEWindow [in] is show IE window(true or false)
+'   @param url [in] url
+'   @param waitTime [in] wait time
+'   @retval IE object
+'*******************************************************************************
+Function CreateIEObject(isShowIEWindow, url, waitTime)
+  Dim objIE
+  
+  Set objIE = WScript.CreateObject(NAME_OF_IE_APPLICATION)
+  objIE.Visible = isShowIEWindow
+  
+  logReturnValueDummy = logOutDebug("web access start url: " & url)
+  
+  objIE.Navigate url
+  
+  If waitTime > 0 Then
+    While objIE.ReadyState <> 4 Or objIE.Busy = True
+      WScript.Sleep waitTime
+    Wend
+  End If
+  
+  logReturnValueDummy = logOutDebug("web access end url: " & url)
+  
+  CreateIEObject = objIE
 End Function
 

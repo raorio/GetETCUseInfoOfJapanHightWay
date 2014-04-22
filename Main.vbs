@@ -1,13 +1,16 @@
 '===============================================================================
 ' main
 '===============================================================================
+
 Option Explicit
 
 '-------------------------------------------------------------------------------
-Dim FileShell
-Set FileShell = Wscript.CreateObject('Scripting FileSystemObject')
+Const NAME_OF_FILESYSTEM = "Scripting.FileSystemObject"
 
-Const ForReadingInclude = 1
+Dim FileShell
+Set FileShell = WScript.CreateObject(NAME_OF_FILESYSTEM)
+
+Const FOR_READING_INCLUDE = 1
 
 
 '*******************************************************************************
@@ -16,15 +19,27 @@ Const ForReadingInclude = 1
 '   @retval nothing
 '*******************************************************************************
 Function ReadVBSFile(ByVal FileName)
-  ReadFile = FileShell.OpenTextFile(FileName, ForReadingInclude, False).ReadAll()
+  ReadVBSFile = FileShell.OpenTextFile(FileName, FOR_READING_INCLUDE, False).ReadAll()
 End Function
 
 
-Execute ReadVBSFile('IncludeConfig.vbs')
-Execute ReadVBSFile('IncludeCommonConfig.vbs')
-Execute ReadVBSFile('IncludeAPI')
-Execute ReadVBSFile('IncludeCommonAPI')
+Execute ReadVBSFile("IncludeConfig.vbs")
+Execute ReadVBSFile("IncludeCommonConfig.vbs")
+Execute ReadVBSFile("IncludeAPI.vbs")
+Execute ReadVBSFile("IncludeCommonAPI.vbs")
 
 
-GetETCInfoOfJapanHightWay()
+' log file check
+funcDummy = logFileCheck()
 
+logReturnValueDummy = logOutInfo("start program")
+
+' set vbs timeout
+If VBS_TIMEOUT > 0 Then
+  WScript.timeout = vbsTimeoutValue
+  logReturnValueDummy = logOutDebug("set vbs timeout: " & VBS_TIMEOUT)
+End If
+
+funcDummy = GetETCUseInfoOfJapanHightWay()
+
+logReturnValueDummy = logOutInfo("end program")
