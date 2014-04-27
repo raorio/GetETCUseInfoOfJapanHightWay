@@ -106,11 +106,14 @@ Const FILE_NAME_OF_USER_INFO = "UserInfo.ini"
 ' sleep time to wait show Web GUI
 Const SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI = 500
 
+' show main Web GUI
+Const IS_SHOW_MAIN_WEB_GUI = true
+
 '---------------------------------------
 ' etc site parameter
 '---------------------------------------
 ' url of etc site
-Const URL_OF_ETC_SITE = "https://www2.etc-user.jp/NASapp/etc/Etc-User?funccode=1011000000&nextfunc=1011100000"
+Const URL_OF_ETC_SITE = "https://www2.etc-user.jp/NASApp/etc/Etc-User?funccode=1011000000&nextfunc=1011100000"
 
 ' name of use car number
 Const NAME_OF_USE_CAR_NUMBER = "sharyo_no"

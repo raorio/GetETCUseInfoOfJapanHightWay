@@ -11,15 +11,16 @@
 '-------------------------------------------------------------------------------
 '*******************************************************************************
 ' logOut
+'   @param targetLogLevel [in] target log level
 '   @param logLevel [in] log level
 '   @param message [in] log message
 '   @retval nothing
 '*******************************************************************************
-Function logOut(logLevel, message)
+Function logOut(targetLogLevel, logLevel, message)
   Dim timeStr
   Dim logContext
   
-  If logLevel <= LOG_TARGET_LEVEL Then
+  If logLevel <= targetLogLevel Then
     logDatetime = strLogDateTime
     
     logContext = logDatetime & DEFINE_SPACE & logLevelStrings(logLevel) & DEFINE_SPACE & message & DefineCrLf
@@ -35,82 +36,89 @@ End Function
 
 '*******************************************************************************
 ' logOutFatal
+'   @param targetLogLevel [in] target log level
 '   @param message [in] log message
 '   @retval nothing
 '*******************************************************************************
-Function logOutFatal(message)
-  logReturnValueDummy = logOut(LOG_LEVEL_NUMBER_FATAL, message)
+Function logOutFatal(targetLogLevel, message)
+  logReturnValueDummy = logOut(targetLogLevel, LOG_LEVEL_NUMBER_FATAL, message)
   
   'logOutFatal = ""
 End Function
 
 '*******************************************************************************
 ' logOutError
+'   @param targetLogLevel [in] target log level
 '   @param message [in] log message
 '   @retval nothing
 '*******************************************************************************
-Function logOutError(message)
-  logReturnValueDummy = logOut(LOG_LEVEL_NUMBER_ERROR, message)
+Function logOutError(targetLogLevel, message)
+  logReturnValueDummy = logOut(targetLogLevel, LOG_LEVEL_NUMBER_ERROR, message)
   
   'logOutError = ""
 End Function
 
 '*******************************************************************************
 ' logOutWarn
+'   @param targetLogLevel [in] target log level
 '   @param message [in] log message
 '   @retval nothing
 '*******************************************************************************
-Function logOutWarn(message)
-  logReturnValueDummy = logOut(LOG_LEVEL_NUMBER_WARN, message)
+Function logOutWarn(targetLogLevel, message)
+  logReturnValueDummy = logOut(targetLogLevel, LOG_LEVEL_NUMBER_WARN, message)
   
   'logOutWarn = ""
 End Function
 
 '*******************************************************************************
 ' logOutInfo
+'   @param targetLogLevel [in] target log level
 '   @param message [in] log message
 '   @retval nothing
 '*******************************************************************************
-Function logOutInfo(message)
-  logReturnValueDummy = logOut(LOG_LEVEL_NUMBER_INFO, message)
+Function logOutInfo(targetLogLevel, message)
+  logReturnValueDummy = logOut(targetLogLevel, LOG_LEVEL_NUMBER_INFO, message)
   
   'logOutInfo = ""
 End Function
 
 '*******************************************************************************
 ' logOutDebug
+'   @param targetLogLevel [in] target log level
 '   @param message [in] log message
 '   @retval nothing
 '*******************************************************************************
-Function logOutDebug(message)
-  logReturnValueDummy = logOut(LOG_LEVEL_NUMBER_DEBUG, message)
+Function logOutDebug(targetLogLevel, message)
+  logReturnValueDummy = logOut(targetLogLevel, LOG_LEVEL_NUMBER_DEBUG, message)
   
   'logOutDebug = ""
 End Function
 
 '*******************************************************************************
 ' logOutDetailDebug
+'   @param targetLogLevel [in] target log level
 '   @param message [in] log message
 '   @retval nothing
 '*******************************************************************************
-Function logOutDetailDebug(message)
-  logReturnValueDummy = logOut(LOG_LEVEL_NUMBER_DETAIL_DEBUG, message)
+Function logOutDetailDebug(targetLogLevel, message)
+  logReturnValueDummy = logOut(targetLogLevel, LOG_LEVEL_NUMBER_DETAIL_DEBUG, message)
   
   'logOutDetailDebug = ""
 End Function
 
 '*******************************************************************************
 ' logFileCheck
-'   @param nothing
+'   @param logFolderPath [in] log folder path
+'   @param logFilePath [in] log file path
 '   @retval nothing
 '*******************************************************************************
-Function logFileCheck()
-  If IsExistFolder(LOG_FOLDER) = true Then
+Function logFileCheck(logFolderPath, logFilePath)
+  If IsExistFolder(logFolderPath) = true Then
     If IsExistFile(logFilePath) = false Then
       CreateFile(logFilePath)
     End If
   Else
-    CreateFolder(LOG_FOLDER)
+    CreateFolder(logFolderPath)
     CreateFile(logFilePath)
   End If
     
@@ -292,13 +300,13 @@ End Function
 '-------------------------------------------------------------------------------
 '*******************************************************************************
 ' DeleteSpace
-'   @param targetStrings [in] target strings
+'   @param targetString [in] target string
 '   @retval replaced string
 '*******************************************************************************
-Function DeleteSpace(targetStrings)
+Function DeleteSpace(targetString)
   Dim replaceString
   
-  replaceString = DeleteSpace2MoreSpace(targetStrings)
+  replaceString = DeleteSpace2MoreSpace(targetString)
   replaceString = Replace(replaceString, DEFINE_SPACE, DEFINE_BRANK)
   
   DeleteSpace = replaceString
@@ -306,17 +314,17 @@ End Function
 
 '*******************************************************************************
 ' DeleteSpace2MoreSpace
-'   @param targetStrings [in] target strings
+'   @param targetString [in] target string
 '   @retval replaced string
 '*******************************************************************************
-Function DeleteSpace2MoreSpace(targetStrings)
-  Dim lengthStrings
+Function DeleteSpace2MoreSpace(targetString)
+  Dim lengthString
   Dim replaceString
   
-  lengthStrings = Len(targetStrings)
-  replaceString = targetStrings
+  lengthString = Len(targetString)
+  replaceString = targetString
   
-  For i = lengthStrings To 2 Step -1
+  For i = lengthString To 2 Step -1
     Dim strChars
     strChars = Space(i)
     replaceString Replace(replaceString, strChars, DEFINE_SPACE)
@@ -324,6 +332,57 @@ Function DeleteSpace2MoreSpace(targetStrings)
   
   DeleteSpace2MoreSpace = replaceString
 End Function
+
+'*******************************************************************************
+' PaddingPrefixString
+'   @param targetString [in] target string
+'   @param paddingChar [in] padding char
+'   @param paddingSize [in] padding size
+'   @retval padding string
+'*******************************************************************************
+Function PaddingPrefixString(targetString, paddingChar, paddingSize)
+  Dim lengthString
+  Dim paddingString
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "PaddingPrefixString start")
+  
+  paddingString = ""
+  lengthString = Len(targetString)
+  
+  For i = paddingSize - 1 To lengthString Step -1
+    paddingString = paddingString & paddingChar
+  Next
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "PaddingPrefixString end")
+  
+  PaddingPrefixString = paddingString & targetString
+End Function
+
+'*******************************************************************************
+' PaddingSuffixString
+'   @param targetString [in] target string
+'   @param paddingChar [in] padding char
+'   @param paddingSize [in] padding size
+'   @retval padding string
+'*******************************************************************************
+Function PaddingSuffixString(targetString, paddingChar, paddingSize)
+  Dim lengthString
+  Dim paddingString
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "PaddingSuffixString start")
+  
+  paddingString = ""
+  lengthString = Len(targetString)
+  
+  For i = paddingSize - 1 To lengthString Step -1
+    paddingString = paddingString & paddingChar
+  Next
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "PaddingSuffixString end")
+  
+  PaddingSuffixString = targetString & paddingString
+End Function
+
 
 '-------------------------------------------------------------------------------
 ' object api
@@ -341,7 +400,7 @@ Function CreateIEObject(isShowIEWindow, url, waitTime)
   Set objIE = WScript.CreateObject(NAME_OF_IE_APPLICATION)
   objIE.Visible = isShowIEWindow
   
-  logReturnValueDummy = logOutDebug("web access start url: " & url)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "web access start url: " & url)
   
   objIE.Navigate url
   
@@ -351,8 +410,8 @@ Function CreateIEObject(isShowIEWindow, url, waitTime)
     Wend
   End If
   
-  logReturnValueDummy = logOutDebug("web access end url: " & url)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "web access end url: " & url)
   
-  CreateIEObject = objIE
+  Set CreateIEObject = objIE
 End Function
 

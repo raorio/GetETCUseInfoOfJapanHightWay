@@ -16,9 +16,8 @@ Function GetETCUseInfoOfJapanHightWay()
   Dim targetCurrentYear
   Dim targetCurrentMonth
   Dim targetCurrentDay
-  targetPeriodHash = GetTargetPeriod()
   
-  logDummy = logOutDebug("GetETCUseInfoOfJapanHightWay start")
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetETCUseInfoOfJapanHightWay start")
   
   ' get script file path
   Dim strSaveFilePath
@@ -26,24 +25,27 @@ Function GetETCUseInfoOfJapanHightWay()
   strScriptPath = Replace(WScript.ScriptFullName, WScript.ScriptName, "")
   strSaveFilePath = strScriptPath & targetCurrentYear & targetCurrentMonth & targetCurrentDay
   CreateFolder(strSaveFilePath)
-  CreateFile(strSaveFilePath & DEFINE_DELIM_FOLDER & saveSumFile)
+  CreateFile(strSaveFilePath & FILE_NAME_OF_SAVE_SUM_FILE)
   
   Dim mainIEObj
   mainIEObj = CreateIEObject(isDispExecIE, URL_OF_ETC_SITE, webSleepTime)
   
   Dim periodParams
-  periodParams = GetTargetPeriod()
+  Set periodParams = GetTargetPeriod(MODE_OF_AUTO_CALC_DATE)
   
+logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetETCUseInfoOfJapanHightWay 6")
   Dim carNumber
   Dim icCardNumber
   
   ' TODO ファイルから番号を取得し、繰り返す
   
+  Set mainIEObj = CreateIEObject(IS_SHOW_MAIN_WEB_GUI, URL_OF_ETC_SITE, SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI)
   funcDummy = SetFormToIE(mainIEObj, periodParams, carNumber, icCardNumber)
+logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetETCUseInfoOfJapanHightWay 8")
   
   ' TODO
   
-  logDummy = logOutDebug("GetETCUseInfoOfJapanHightWay end")
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetETCUseInfoOfJapanHightWay end")
   
   'GetETCUseInfoOfJapanHightWay = TODO
 End Function
@@ -54,23 +56,30 @@ End Function
 '-------------------------------------------------------------------------------
 '*******************************************************************************
 ' get target period
-'   @param nothing
+'   @param getMode [in] get mode
 '   @retval resultPeriodHash result period hash
 '*******************************************************************************
-Function GetTargetPeriod()
+Function GetTargetPeriod(getMode)
+  Dim getPeriodHash
   Dim resultPeriodHash
   
-  If MODE_OF_AUTO_CALC_DATE = 1 Then
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetTargetPeriod start")
+  
+  If getMode = 1 Then
     ' "auto 20 day per a month"
-    resultPeriodHash = GetTargetPeriodByAuto20DayPerAMonth
+    Set getPeriodHash = GetTargetPeriodByAuto20DayPerAMonth
   'ElseIf getTargetMode = "" Then
-  '  resultPeriodHash = GetTargetPeriodByTODO
+  '  Set getPeriodHash = GetTargetPeriodByTODO
   Else
     ' "auto 20 day per a month"
-    resultPeriodHash = GetTargetPeriodByAuto20DayPerAMonth
+    Set getPeriodHash = GetTargetPeriodByAuto20DayPerAMonth
   End If
-
-  GetTargetPeriod = resultPeriodHash
+  
+  Set resultPeriodHash = PaddingTargetPeriod(getPeriodHash)
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetTargetPeriod end")
+  
+  Set GetTargetPeriod = resultPeriodHash
 End Function
 
 '*******************************************************************************
@@ -88,6 +97,8 @@ Function GetTargetPeriodByAuto20DayPerAMonth()
   Dim targetCurrentYear
   Dim targetCurrentMonth
   Dim targetCurrentDay
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetTargetPeriodByAuto20DayPerAMonth start")
   
   currentMonth = Month(Now)
   currentDay = Day(Now)
@@ -116,19 +127,64 @@ Function GetTargetPeriodByAuto20DayPerAMonth()
     targetCurrentMonth = 12
   End If
   
-  ' TODO
-  funcDummy = resultPeriodHash(PREV_YEAR, targetPrevYear)
+  Set resultPeriodHash = CreateObject("Scripting.Dictionary")
+  funcDummy = resultPeriodHash.Add(NAME_OF_USE_FROM_YEAR, targetPrevYear)
+  funcDummy = resultPeriodHash.Add(NAME_OF_USE_FROM_MONTH, targetPrevMonth)
+  funcDummy = resultPeriodHash.Add(NAME_OF_USE_FROM_DAY, targetPrevDay)
+  funcDummy = resultPeriodHash.Add(NAME_OF_USE_TO_YEAR, targetCurrentYear)
+  funcDummy = resultPeriodHash.Add(NAME_OF_USE_TO_MONTH, targetCurrentMonth)
+  funcDummy = resultPeriodHash.Add(NAME_OF_USE_TO_DAY, targetCurrentDay)
   
-  currentMonth = Nothing
-  currentDay = Nothing
-  targetPrevYear = Nothing
-  targetPrevMonth = Nothing
-  targetPrevDay = Nothing
-  targetCurrentYear = Nothing
-  targetCurrentMonth = Nothing
-  targetCurrentDay = Nothing
+  Set currentMonth = Nothing
+  Set currentDay = Nothing
+  Set targetPrevYear = Nothing
+  Set targetPrevMonth = Nothing
+  Set targetPrevDay = Nothing
+  Set targetCurrentYear = Nothing
+  Set targetCurrentMonth = Nothing
+  Set targetCurrentDay = Nothing
   
-  GetTargetPeriod = resultPeriodHash
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetTargetPeriodByAuto20DayPerAMonth end")
+  
+  Set GetTargetPeriodByAuto20DayPerAMonth = resultPeriodHash
+End Function
+
+'*******************************************************************************
+' padding target period
+'   @param periodParams [in] period params
+'   @retval resultPeriodHash result period hash
+'*******************************************************************************
+Function PaddingTargetPeriod(periodParams)
+  Dim resultPeriodHash
+  Dim currentMonth
+  Dim currentDay
+  Dim targetPrevYear
+  Dim targetPrevMonth
+  Dim targetPrevDay
+  Dim targetCurrentYear
+  Dim targetCurrentMonth
+  Dim targetCurrentDay
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "PaddingTargetPeriod start")
+  
+  targetPrevYear = PaddingPrefixString(periodParams(NAME_OF_USE_FROM_YEAR), "0", 4)
+  targetPrevMonth =  PaddingPrefixString(periodParams(NAME_OF_USE_FROM_MONTH), "0", 2)
+  targetPrevDay = PaddingPrefixString(periodParams(NAME_OF_USE_FROM_DAY), "0", 2)
+  targetCurrentYear = PaddingPrefixString(periodParams(NAME_OF_USE_TO_YEAR), "0", 4)
+  targetCurrentMonth = PaddingPrefixString(periodParams(NAME_OF_USE_TO_MONTH), "0", 2)
+  targetCurrentDay = PaddingPrefixString(periodParams(NAME_OF_USE_TO_DAY), "0", 2)
+  
+  Set resultPeriodHash = CreateObject("Scripting.Dictionary")
+  funcDummy = resultPeriodHash.Add(NAME_OF_USE_FROM_YEAR, targetPrevYear)
+  funcDummy = resultPeriodHash.Add(NAME_OF_USE_FROM_MONTH, targetPrevMonth)
+  funcDummy = resultPeriodHash.Add(NAME_OF_USE_FROM_DAY, targetPrevDay)
+  funcDummy = resultPeriodHash.Add(NAME_OF_USE_TO_YEAR, targetCurrentYear)
+  funcDummy = resultPeriodHash.Add(NAME_OF_USE_TO_MONTH, targetCurrentMonth)
+  funcDummy = resultPeriodHash.Add(NAME_OF_USE_TO_DAY, targetCurrentDay)
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "PaddingTargetPeriod end")
+  
+  Set PaddingTargetPeriod = resultPeriodHash
 End Function
 
 '*******************************************************************************
@@ -141,6 +197,8 @@ End Function
 '*******************************************************************************
 Function SetFormToIE(objIE, periodParams, carNumber, icCardNumber)
   Dim resultPeriodHash
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SetFormToIE start")
   
   Dim objCarNumber
   Dim objICCardNumber
@@ -163,54 +221,61 @@ Function SetFormToIE(objIE, periodParams, carNumber, icCardNumber)
   Dim errorMessage
   errorMessage = "サイト内容が変わったか、メンテナンス中です。表示されている内容を確認し、必要があれば、開発者に問い合わせてください。"
   If objCarNumber.Length = 0 Then
-    logDummy = logOutFatal(errorMessage & NAME_OF_USE_CAR_NUMBER)
+    logReturnValueDummy = logOutFatal(LOG_TARGET_LEVEL, errorMessage & NAME_OF_USE_CAR_NUMBER)
     WScript.Quit 1
   End If
   If objICCardNumber.Length = 0 Then
-    logDummy = logOutFatal(errorMessage & NAME_OF_USE_ETC_CARD_NUMBER)
+    logReturnValueDummy = logOutFatal(LOG_TARGET_LEVEL, errorMessage & NAME_OF_USE_ETC_CARD_NUMBER)
     WScript.Quit 1
   End If
   If objFromYear.Length = 0 Then
-    logDummy = logOutFatal(errorMessage & NAME_OF_USE_FROM_YEAR)
+    logReturnValueDummy = logOutFatal(LOG_TARGET_LEVEL, errorMessage & NAME_OF_USE_FROM_YEAR)
     WScript.Quit 1
   End If
   If objFromMonth.Length = 0 Then
-    logDummy = logOutFatal(errorMessage & NAME_OF_USE_FROM_MONTH)
+    logReturnValueDummy = logOutFatal(LOG_TARGET_LEVEL, errorMessage & NAME_OF_USE_FROM_MONTH)
     WScript.Quit 1
   End If
   If objFromDay.Length = 0 Then
-    logDummy = logOutFatal(errorMessage & NAME_OF_USE_FROM_DAY)
+    logReturnValueDummy = logOutFatal(LOG_TARGET_LEVEL, errorMessage & NAME_OF_USE_FROM_DAY)
     WScript.Quit 1
   End If
   If objToYear.Length = 0 Then
-    logDummy = logOutFatal(errorMessage & NAME_OF_USE_TO_YEAR)
+    logReturnValueDummy = logOutFatal(LOG_TARGET_LEVEL, errorMessage & NAME_OF_USE_TO_YEAR)
     WScript.Quit 1
   End If
   If objToMonth.Length = 0 Then
-    logDummy = logOutFatal(errorMessage & NAME_OF_USE_TO_MONTH)
+    logReturnValueDummy = logOutFatal(LOG_TARGET_LEVEL, errorMessage & NAME_OF_USE_TO_MONTH)
     WScript.Quit 1
   End If
   If objToDay.Length = 0 Then
-    logDummy = logOutFatal(errorMessage & NAME_OF_USE_TO_DAY)
+    logReturnValueDummy = logOutFatal(LOG_TARGET_LEVEL, errorMessage & NAME_OF_USE_TO_DAY)
     WScript.Quit 1
   End If
   
+  Dim setParameterLogMessage
+  setParameterLogMessage = "from: " & periodParams(NAME_OF_USE_FROM_YEAR) & DEFINE_DELIM_DATE & periodParams(NAME_OF_USE_FROM_MONTH) & DEFINE_DELIM_DATE & periodParams(NAME_OF_USE_FROM_DAY)
+  setParameterLogMessage = setParameterLogMessage & " to: " & periodParams(NAME_OF_USE_TO_YEAR) & DEFINE_DELIM_DATE & periodParams(NAME_OF_USE_TO_MONTH) & DEFINE_DELIM_DATE & periodParams(NAME_OF_USE_TO_DAY)
+  logReturnValueDummy = logOutInfo(LOG_TARGET_LEVEL, setParameterLogMessage)
+  
   objCarNumber(0).Value = carNumber
   Set objCarNumber = Nothing
-  objICCardNumber(0).Value = carNumber
+  objICCardNumber(0).Value = icCardNumber
   Set objICCardNumber = Nothing
-  objFromYear(0).Value = carNumber
+  objFromYear(0).Value = periodParams(NAME_OF_USE_FROM_YEAR)
   Set objFromYear = Nothing
-  objFromMonth(0).Value = carNumber
+  objFromMonth(0).Value = periodParams(NAME_OF_USE_FROM_MONTH)
   Set objFromMonth = Nothing
-  objFromDay(0).Value = carNumber
+  objFromDay(0).Value = periodParams(NAME_OF_USE_FROM_DAY)
   Set objFromDay = Nothing
-  objToYear(0).Value = carNumber
+  objToYear(0).Value = periodParams(NAME_OF_USE_TO_YEAR)
   Set objToYear = Nothing
-  objToMonth(0).Value = carNumber
+  objToMonth(0).Value = periodParams(NAME_OF_USE_TO_MONTH)
   Set objToMonth = Nothing
-  objToDay(0).Value = carNumber
+  objToDay(0).Value = periodParams(NAME_OF_USE_TO_DAY)
   Set objToDay = Nothing
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SetFormToIE end")
   
   'SetFormToIE = 
 End Function
