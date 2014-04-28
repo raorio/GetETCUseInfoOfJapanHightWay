@@ -33,15 +33,35 @@ Function GetETCUseInfoOfJapanHightWay()
   Dim periodParams
   Set periodParams = GetTargetPeriod(MODE_OF_AUTO_CALC_DATE)
   
-logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetETCUseInfoOfJapanHightWay 6")
-  Dim carNumber
-  Dim icCardNumber
+  Dim userInfos
+  userInfos = ReadUserInfoFile(FILE_NAME_OF_USER_INFO)
+  If IsNull(userInfos) = True Then
+    logReturnValueDummy = logOutFatal(LOG_TARGET_LEVEL, "please confirm user info file: " & FILE_NAME_OF_USER_INFO)
+    WScript.Quit 1
+  End If
   
-  ' TODO ファイルから番号を取得し、繰り返す
-  
-  Set mainIEObj = CreateIEObject(IS_SHOW_MAIN_WEB_GUI, URL_OF_ETC_SITE, SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI)
-  funcDummy = SetFormToIE(mainIEObj, periodParams, carNumber, icCardNumber)
-logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetETCUseInfoOfJapanHightWay 8")
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "user info size: " & UBound(userInfos))
+  'For Each userInfo In userInfos
+  For indexObUserInfos = 0 To UBound(userInfos) - 1
+    Dim userInfo
+    userInfo = userInfos(indexObUserInfos)
+    If IsNull(userInfo) = True Then
+      ' skip
+    Else
+      Dim carNumber
+      Dim icCardNumber
+      
+      carNumber = userInfo(INDEX_OF_CAR_NUMBER)
+      icCardNumber = userInfo(INDEX_OF_ID_CARD_NUMBER)
+      
+      Set mainIEObj = CreateIEObject(IS_SHOW_MAIN_WEB_GUI, URL_OF_ETC_SITE, SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI)
+      funcDummy = SetFormToIE(mainIEObj, periodParams, carNumber, icCardNumber)
+      
+      ' TODO
+      
+      Set mainIEObj = Nothing
+    End If
+  Next
   
   ' TODO
   
@@ -54,6 +74,65 @@ End Function
 '-------------------------------------------------------------------------------
 ' other api
 '-------------------------------------------------------------------------------
+'*******************************************************************************
+' ReadUserInfoFile 
+'   @param filePath [in] get mode
+'   @retval user info
+'*******************************************************************************
+Function ReadUserInfoFile(filePath)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ReadUserInfoFile start")
+  
+  Dim objFile
+  
+  Set objFile = OpenFileToRead(filePath)
+  If IsNull(objFile) = True Then
+    logReturnValueDummy = LogOutFatal(LOG_TARGET_LEVEL, "please confirm user info file: " & filePath)
+    WScript.Quit 1
+  End If
+  
+  ReDim userInfos(-1)
+  Dim context
+  Do Until objFile.AtEndOfLine = True
+    context = ReadFromObjectFile(objFile)
+    If IsNull(context) = True Then
+      Exit Do
+    End If
+    
+    Dim contextOfNoSpace
+    Dim currentUserInfoSize
+    Dim userInfo
+    
+    contextOfNoSpace = DeleteSpace(context)
+    
+    Dim firstChar
+    firstChar = Left(context, 1)
+    If firstChar = DEFINE_SINGLE_QUOTE Then
+      ' skip comment
+    Else
+      userInfo = Split(contextOfNoSpace, ",", SIZE_OF_USER_INFO_INDEX)
+      If UBound(userInfo) = SIZE_OF_USER_INFO_INDEX Then
+        ' skip invalid format
+      Else
+        logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "user info: " & contextOfNoSpace)
+        currentUserInfoSize = UBound(userInfos)
+        If currentUserInfoSize = -1 Then
+          currentUserInfoSize = 0
+        End If
+        ReDim Preserve userInfos(currentUserInfoSize + 1)
+        userInfos(currentUserInfoSize) = userInfo
+      End If
+    End If
+  Loop
+  
+  CloseObjectFile(objFile)
+  Set objFile = Nothing
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ReadUserInfoFile end")
+  
+  ReadUserInfoFile = userInfos
+  'ReadUserInfoFile = resultUserInfos
+End Function
+
 '*******************************************************************************
 ' get target period
 '   @param getMode [in] get mode

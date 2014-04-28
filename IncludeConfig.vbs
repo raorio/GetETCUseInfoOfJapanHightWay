@@ -94,6 +94,18 @@ Const OUT_NAMES_OF_EXCLUDE_GATE = ""
 '   ex: PRISES_OF_EXCLUDE = "820,640"
 Const PRISES_OF_EXCLUDE = ""
 
+'-------------------
+' user info
+'-------------------
+' index of car number
+Const INDEX_OF_CAR_NUMBER = 0
+
+' index of ic card number
+Const INDEX_OF_ID_CARD_NUMBER = 1
+
+' size of user info index
+Const SIZE_OF_USER_INFO_INDEX = 2
+
 '---------------------------------------
 ' input parameter
 '---------------------------------------

@@ -10,13 +10,13 @@
 ' log api
 '-------------------------------------------------------------------------------
 '*******************************************************************************
-' logOut
+' LogOut
 '   @param targetLogLevel [in] target log level
 '   @param logLevel [in] log level
 '   @param message [in] log message
 '   @retval nothing
 '*******************************************************************************
-Function logOut(targetLogLevel, logLevel, message)
+Function LogOut(targetLogLevel, logLevel, message)
   Dim timeStr
   Dim logContext
   
@@ -30,8 +30,6 @@ Function logOut(targetLogLevel, logLevel, message)
   
   Set logContext = Nothing
   Set timeStr = Nothing
-  
-  'logOut = ""
 End Function
 
 '*******************************************************************************
@@ -40,10 +38,8 @@ End Function
 '   @param message [in] log message
 '   @retval nothing
 '*******************************************************************************
-Function logOutFatal(targetLogLevel, message)
-  logReturnValueDummy = logOut(targetLogLevel, LOG_LEVEL_NUMBER_FATAL, message)
-  
-  'logOutFatal = ""
+Function LogOutFatal(targetLogLevel, message)
+  logReturnValueDummy = LogOut(targetLogLevel, LOG_LEVEL_NUMBER_FATAL, message)
 End Function
 
 '*******************************************************************************
@@ -52,10 +48,8 @@ End Function
 '   @param message [in] log message
 '   @retval nothing
 '*******************************************************************************
-Function logOutError(targetLogLevel, message)
-  logReturnValueDummy = logOut(targetLogLevel, LOG_LEVEL_NUMBER_ERROR, message)
-  
-  'logOutError = ""
+Function LogOutError(targetLogLevel, message)
+  logReturnValueDummy = LogOut(targetLogLevel, LOG_LEVEL_NUMBER_ERROR, message)
 End Function
 
 '*******************************************************************************
@@ -64,10 +58,8 @@ End Function
 '   @param message [in] log message
 '   @retval nothing
 '*******************************************************************************
-Function logOutWarn(targetLogLevel, message)
-  logReturnValueDummy = logOut(targetLogLevel, LOG_LEVEL_NUMBER_WARN, message)
-  
-  'logOutWarn = ""
+Function LogOutWarn(targetLogLevel, message)
+  logReturnValueDummy = LogOut(targetLogLevel, LOG_LEVEL_NUMBER_WARN, message)
 End Function
 
 '*******************************************************************************
@@ -76,10 +68,8 @@ End Function
 '   @param message [in] log message
 '   @retval nothing
 '*******************************************************************************
-Function logOutInfo(targetLogLevel, message)
-  logReturnValueDummy = logOut(targetLogLevel, LOG_LEVEL_NUMBER_INFO, message)
-  
-  'logOutInfo = ""
+Function LogOutInfo(targetLogLevel, message)
+  logReturnValueDummy = LogOut(targetLogLevel, LOG_LEVEL_NUMBER_INFO, message)
 End Function
 
 '*******************************************************************************
@@ -88,10 +78,8 @@ End Function
 '   @param message [in] log message
 '   @retval nothing
 '*******************************************************************************
-Function logOutDebug(targetLogLevel, message)
-  logReturnValueDummy = logOut(targetLogLevel, LOG_LEVEL_NUMBER_DEBUG, message)
-  
-  'logOutDebug = ""
+Function LogOutDebug(targetLogLevel, message)
+  logReturnValueDummy = LogOut(targetLogLevel, LOG_LEVEL_NUMBER_DEBUG, message)
 End Function
 
 '*******************************************************************************
@@ -100,10 +88,8 @@ End Function
 '   @param message [in] log message
 '   @retval nothing
 '*******************************************************************************
-Function logOutDetailDebug(targetLogLevel, message)
-  logReturnValueDummy = logOut(targetLogLevel, LOG_LEVEL_NUMBER_DETAIL_DEBUG, message)
-  
-  'logOutDetailDebug = ""
+Function LogOutDetailDebug(targetLogLevel, message)
+  logReturnValueDummy = LogOut(targetLogLevel, LOG_LEVEL_NUMBER_DETAIL_DEBUG, message)
 End Function
 
 '*******************************************************************************
@@ -112,7 +98,7 @@ End Function
 '   @param logFilePath [in] log file path
 '   @retval nothing
 '*******************************************************************************
-Function logFileCheck(logFolderPath, logFilePath)
+Function LogFileCheck(logFolderPath, logFilePath)
   If IsExistFolder(logFolderPath) = true Then
     If IsExistFile(logFilePath) = false Then
       CreateFile(logFilePath)
@@ -121,8 +107,6 @@ Function logFileCheck(logFolderPath, logFilePath)
     CreateFolder(logFolderPath)
     CreateFile(logFilePath)
   End If
-    
-  'logFileCheck = ""
 End Function
 
 '-------------------------------------------------------------------------------
@@ -146,8 +130,6 @@ Function CreateFolder(folderPath)
   End If
   
   Set objFileSys = Nothing
-  
-  'CreateFolder = 
 End Function
 
 '*******************************************************************************
@@ -188,8 +170,6 @@ Function CreateFile(filePath)
   objFileSys.CreateTextFile filePath
   
   Set objFileSys = Nothing
-  
-  'CreateFolder = 
 End Function
 
 '*******************************************************************************
@@ -228,8 +208,6 @@ Function AppendFile(filePath, context)
   
   Set resStream = Nothing
   Set objFileSys = Nothing
-  
-  'AppendFile = 
 End Function
 
 '*******************************************************************************
@@ -242,7 +220,7 @@ Function ReadFileAllContext(filePath)
   
   Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
   If objFileSys.FileExists(filePath) = false Then
-    logReturnValueDummy = logOut(logLevelError, "file don't exist: " & filePath)
+    logReturnValueDummy = LogOut(logLevelError, "file don't exist: " & filePath)
     Set ReadFileAllContext = Nothing
   Else
     Dim resStream
@@ -277,6 +255,88 @@ Function ReadFileAllContextAfterDelete(filePath)
 End Function
 
 '*******************************************************************************
+' OpenFileToRead
+'   @param filePath [in] file path
+'   @retval file object
+'*******************************************************************************
+Function OpenFileToRead(filePath)
+  Dim objFileSys
+  
+  Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
+  If objFileSys.FileExists(filePath) = false Then
+    logReturnValueDummy = LogOut(logLevelError, "file don't exist: " & filePath)
+    Set OpenFileToRead = Nothing
+  Else
+    Set objFileSys = objFileSys.OpenTextFile(filePath, ForReading)
+    
+    Set OpenFileToRead = objFileSys
+  End If
+End Function
+
+'*******************************************************************************
+' OpenFileToWrite
+'   @param filePath [in] file path
+'   @retval file object
+'*******************************************************************************
+Function OpenFileToWrite(filePath)
+  Dim objFileSys
+  
+  Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
+  Set resStream = objFileSys.OpenTextFile(filePath, ForWriting)
+End Function
+
+'*******************************************************************************
+' OpenFileToAppend
+'   @param filePath [in] file path
+'   @retval file object
+'*******************************************************************************
+Function OpenFileToAppend(filePath)
+  Dim objFileSys
+  
+  Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
+  If objFileSys.FileExists(filePath) = false Then
+    logReturnValueDummy = LogOut(logLevelError, "file don't exist: " & filePath)
+    Set OpenFileToAppend = Nothing
+  Else
+    Set objFileSys = objFileSys.OpenTextFile(filePath, ForAppending)
+    
+    Set OpenFileToAppend = objFileSys
+  End If
+End Function
+
+'*******************************************************************************
+' WriteToObjectFile
+'   @param objFileSys [in] object file system
+'   @param context [in] context
+'   @retval nothing
+'*******************************************************************************
+Function WriteToObjectFile(objFileSys, context)
+  objFileSys.Write(context)
+End Function
+
+'*******************************************************************************
+' ReadFromObjectFile
+'   @param objFileSys [in] object file system
+'   @retval line context
+'*******************************************************************************
+Function ReadFromObjectFile(objFileSys)
+  Dim lineContext
+  
+  lineContext = objFileSys.ReadLine()
+  
+  ReadFromObjectFile = lineContext
+End Function
+
+'*******************************************************************************
+' CloseObjectFile
+'   @param objFileSys [in] object file system
+'   @retval nothing
+'*******************************************************************************
+Function CloseObjectFile(objFileSys)
+  objFileSys.Close()
+End Function
+
+'*******************************************************************************
 ' DeleteFile
 '   @param filePath [in] file path
 '   @retval nothing
@@ -291,8 +351,6 @@ Function DeleteFile(filePath)
   End If
   
   Set objFileSys = Nothing
-  
-  'DeleteFile = 
 End Function
 
 '-------------------------------------------------------------------------------
@@ -327,7 +385,7 @@ Function DeleteSpace2MoreSpace(targetString)
   For i = lengthString To 2 Step -1
     Dim strChars
     strChars = Space(i)
-    replaceString Replace(replaceString, strChars, DEFINE_SPACE)
+    replaceString = Replace(replaceString, strChars, DEFINE_SPACE)
   Next
   
   DeleteSpace2MoreSpace = replaceString
@@ -383,6 +441,11 @@ Function PaddingSuffixString(targetString, paddingChar, paddingSize)
   PaddingSuffixString = targetString & paddingString
 End Function
 
+
+'-------------------------------------------------------------------------------
+' file api
+'-------------------------------------------------------------------------------
+'TODO
 
 '-------------------------------------------------------------------------------
 ' object api

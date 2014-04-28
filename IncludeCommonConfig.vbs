@@ -26,6 +26,12 @@ Const DEFINE_COLON = ":"
 ' brank
 Const DEFINE_BRANK = ""
 
+' single qulote
+Const DEFINE_SINGLE_QUOTE = "'"
+
+' double qulote
+Const DEFINE_DOUBLE_QUOTE = """"
+
 ' delim folder
 Const DEFINE_DELIM_FOLDER = "\"
 
