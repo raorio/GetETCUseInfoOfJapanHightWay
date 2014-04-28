@@ -175,7 +175,7 @@ End Function
 '*******************************************************************************
 ' IsExistFile
 '   @param filePath [in] file path
-'   @retval nothing
+'   @retval true/false true:exist, false:not exist
 '*******************************************************************************
 Function IsExistFile(filePath)
   Dim result
@@ -447,11 +447,76 @@ End Function
 '-------------------------------------------------------------------------------
 'TODO
 
+
+'-------------------------------------------------------------------------------
+' web api
+'-------------------------------------------------------------------------------
+'*******************************************************************************
+' GetHttp
+'   @param url [in] url
+'   @param saveFilePath [in] save file path
+'   @param porxyServer [in] proxy server(if brank, don't use proxy server)
+'   @retval true/false true:success, false:failed
+'*******************************************************************************
+Function GetHttp(url, saveFilePath, proxyServer)
+  Dim objHttp
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetHttp start")
+  
+  On Error Resume Next
+    For Each objName In httpObjectList
+      Set objHttp = CreageObject(MSXML2_XMLHTTP_3_0)
+      If Err.Number = 0 Then
+        logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "http object: " & objName)
+        Exit For
+      End If
+    Next
+  On Error GoTo 0
+  If IsNull(objXmlHttp) = True Then
+    logReturnValueDummy = logOutError(LOG_TARGET_LEVEL, "create http object")
+    GetHttp = False
+  Else
+    If IsExistFile(saveFilePath) = True Then
+      DeleteFile(saveFilePath)
+    End If
+    
+    If Len(proxyServer) <> 0 Then
+      funcDummy = objHttp.SetProxy(2, proxyServer, "")
+    End If
+    
+    objHttp.Open "GET", url, False
+    objHttp.Send()
+    
+    If objHttp.Status = 200 Then
+      logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "success http get: " & url)
+      
+      Dim objStream
+      Set objStream = CreateObject(ADOBJ_STREAM)
+      objStream.Open()
+      objStream.Type = 1
+      objStream.Write(objHttp.responseBody)
+      objStream.Close()
+      
+      GetHttp = True
+    Else
+      logReturnValueDummy = logOutError(LOG_TARGET_LEVEL, "failed http get: " & url)
+      
+      GetHttp = False
+    End If
+  End If
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetHttp end")
+End Function
+
+
 '-------------------------------------------------------------------------------
 ' object api
 '-------------------------------------------------------------------------------
+'-------------------------------------------------------------------------------
+' IE object api
+'-------------------------------------------------------------------------------
 '*******************************************************************************
-' DeleteSpace
+' CreateIEObject
 '   @param isShowIEWindow [in] is show IE window(true or false)
 '   @param url [in] url
 '   @param waitTime [in] wait time
@@ -467,14 +532,24 @@ Function CreateIEObject(isShowIEWindow, url, waitTime)
   
   objIE.Navigate url
   
+  funcDummy = WaitIEObject(objIE, waitTime)
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "web access end url: " & url)
+  
+  Set CreateIEObject = objIE
+End Function
+
+'*******************************************************************************
+' WaitIEObject
+'   @param objIE [in] object IE
+'   @param waitTime [in] wait time
+'   @retval nothing
+'*******************************************************************************
+Function WaitIEObject(objIE, waitTime)
   If waitTime > 0 Then
     While objIE.ReadyState <> 4 Or objIE.Busy = True
       WScript.Sleep waitTime
     Wend
   End If
-  
-  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "web access end url: " & url)
-  
-  Set CreateIEObject = objIE
 End Function
 

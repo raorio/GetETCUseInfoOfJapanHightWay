@@ -157,6 +157,21 @@ Const PRISE_PREFIX_VALUE = " \"
 ' prise suffix value
 Const PRISE_SUFFIX_VALUE = ""
 
+' name of input check box
+Const NAME_OF_INPUT_CHECK_BOX = "INPUT"
+
+' name of input check box type
+Const NAME_OF_ATTRIBUTE_TYPE = "type"
+
+' name of input check box name
+Const NAME_OF_ATTRIBUTE_NAME = "name"
+
+' name of input check box type
+Const NAME_OF_CHECKBOX = "checkbox"
+
+' number of hight way use parts
+Const NUMBER_OF_HIGHT_WAY_USE_PARTS = 7
+
 '---------------------------------------
 ' excel parameter
 '---------------------------------------

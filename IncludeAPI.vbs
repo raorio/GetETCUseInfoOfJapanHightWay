@@ -57,7 +57,21 @@ Function GetETCUseInfoOfJapanHightWay()
       Set mainIEObj = CreateIEObject(IS_SHOW_MAIN_WEB_GUI, URL_OF_ETC_SITE, SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI)
       funcDummy = SetFormToIE(mainIEObj, periodParams, carNumber, icCardNumber)
       
+      ' Enter
+      mainIEObj.Document.forms(0).submit
+      
+      ' wait
+      funcDummy = WaitIEObject(mainIEObj, SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI)
+      
+      ' error check
       ' TODO
+      
+      Dim isContinue
+      isContinue = True
+      ' request and parse
+      Do Until isContinue = False
+        isContinue = RequestAndParsePage(mainIEObj)
+      Loop
       
       Set mainIEObj = Nothing
     End If
@@ -186,7 +200,7 @@ Function GetTargetPeriodByAuto20DayPerAMonth()
   targetCurrentYear = Year(Now)
   
   ' detect month
-  If currentMonth > 20 Then
+  If currentDay > 20 Then
     targetPrevMonth = currentMonth - 1
     targetCurrentMonth = currentMonth
   Else
@@ -357,5 +371,73 @@ Function SetFormToIE(objIE, periodParams, carNumber, icCardNumber)
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SetFormToIE end")
   
   'SetFormToIE = 
+End Function
+
+'*******************************************************************************
+' RequestAndParsePage
+'   @param objIE [in] IE object
+'   @retval true/false true:continue, false:
+'*******************************************************************************
+Function RequestAndParsePage(objIE)
+  Dim result
+  result = False
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "RequestAndParsePage start")
+  
+  Dim objInputTags
+  Set objInputTags = objIE.getElementsByTagName(NAME_OF_INPUT_CHECK_BOX)
+  
+  If objInputTags.Length = 0 Then
+    Dim errorMessage
+    errorMessage = "入力に不正があるか、メンテナンス中です。表示されている内容を確認し、必要があれば、開発者に問い合わせてください。"
+    logReturnValueDummy = logOutError(LOG_TARGET_LEVEL, errorMessage)
+    WScript.Quit 1
+  Else
+    Dim indexOfInputTag
+    For indexOfInputTag = 0 To objInputTags.Length - 1
+      Dim typeOfAttrName
+      Dim nameOfAttrName
+      typeOfAttrName = objOfInputTag(indexOfInputTag).getAttribute(NAME_OF_ATTRIBUTE_TYPE)
+      nameOfAttrName = objOfInputTag(indexOfInputTag).getAttribute(NAME_OF_ATTRIBUTE_NAME)
+      If typeOfAttrName = NAME_OF_CHECKBOX Then
+        If IsCheckHightWayUse(objOfInputTag(indexOfInputTag)) = True Then
+          objOfInputTag(indexOfInputTag).Click()
+        End If
+      End If
+      
+      ' TODO
+    Next
+  End If
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "RequestAndParsePage end")
+  
+  RequestAndParsePage = result
+End Function
+
+'*******************************************************************************
+' IsTargetHightWayUse
+'   @param objElement [in] objElement
+'   @retval true/false true:target, false:not target
+'*******************************************************************************
+Function IsCheckHightWayUse(objElement)
+  Dim result
+  result = False
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "IsCheckHightWayUse start")
+  
+  Dim targetHightWayUse
+  targetHightWayUse = objElement.parentNode.parentNode.innerText
+  
+  Dim targetHightWayUseParts
+  targetHightWayUseParts = Split(targetHightWayUse, DefineCrLf)
+  If UBond(targetHightWayUseParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS Then
+    
+  End If
+  
+  ' TODO
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "IsCheckHightWayUse end")
+  
+  IsCheckHightWayUse = result
 End Function
 

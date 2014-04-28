@@ -82,6 +82,31 @@ Const ForAppending = 8
 ' name of IE application
 Const NAME_OF_IE_APPLICATION = "InternetExplorer.Application"
 
+'-------------------
+' http object
+'-------------------
+' MSXML2.XMLHTTP.3.0
+Const MSXML2_XMLHTTP_3_0 = "MSXML2.XMLHTTP.3.0"
+
+' MSXML2.SERVERXMLHTTP.4.0
+Const MSXML2_SERVERXMLHTTP_4_0 = "MSXML2.SERVERXMLHTTP.4.0"
+
+' MSXML.XMLHTTPRequest
+Const MSXML_XMLHTTPREQUEST = "MSXML.XMLHTTPRequest"
+
+' Microsoft.XMLHTTP
+Const MICROSOFT_XMLHTTP = "Microsoft.XMLHTTP"
+
+' http object list
+Dim httpObjectList(4)
+httpObjectList(0) = MSXML2_XMLHTTP_3_0
+httpObjectList(1) = MSXML2_SERVERXMLHTTP_4_0
+httpObjectList(2) = MSXML_XMLHTTPREQUEST
+httpObjectList(3) = MICROSOFT_XMLHTTP
+
+' ADOBJ.Stream
+Const ADOBJ_STREAM = "ADOBJ.Stream"
+
 '---------------------------------------
 ' log
 '---------------------------------------
