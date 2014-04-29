@@ -10,13 +10,6 @@
 '   @retval nothing
 '*******************************************************************************
 Function GetETCUseInfoOfJapanHightWay()
-  Dim targetPrevYear
-  Dim targetPrevMonth
-  Dim targetPrevDay
-  Dim targetCurrentYear
-  Dim targetCurrentMonth
-  Dim targetCurrentDay
-  
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetETCUseInfoOfJapanHightWay start")
   
   ' get script file path
@@ -66,11 +59,45 @@ Function GetETCUseInfoOfJapanHightWay()
       ' error check
       ' TODO
       
+      Dim sequenceNumber
+      sequenceNumber = 0
       Dim isContinue
       isContinue = True
       ' request and parse
       Do Until isContinue = False
-        isContinue = RequestAndParsePage(mainIEObj)
+logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetETCUseInfoOfJapanHightWay 4")
+        isContinue = RequestAndParsePage(mainIEObj, sequenceNumber)
+logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetETCUseInfoOfJapanHightWay 5")
+        sequenceNumber = sequenceNumber + 1
+        
+        Dim objAOfTag
+logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetETCUseInfoOfJapanHightWay 6")
+        Set objAOfTag = mainIEObj.Document.getElementsByTagName(NAME_OF_A_NAME)
+        Dim indexOfATag
+        Dim hrefName
+        For indexOfATag = 0 To objAOfTag.Length - 1
+          hrefName = objAOfTag(indexOfATag).getAttribute(NAME_OF_ATTRIBUTE_HREF)
+          If hrefName <> DEFINE_BRANK Then
+            Dim targetPage
+            Dim hrefNameParts
+            hrefNameParts = Split(hrefName, NAME_OF_LINK_PAGE)
+            If UBound(hrefNameParts) = 1 Then
+              targetPage = CInt(hrefNameParts(1))
+            Else
+              ' skip
+            End If
+            
+            ' TODO
+            
+            If currentPage < targetPage Then
+              currentPage = targetPage
+              objAOfTag(indexOfATag).Click
+              indexOfATag = objAOfTag.Length
+              
+              funcDummy = WaitIEObject(mainIEObj, SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI)
+            End If
+          End If
+        Next
       Loop
       
       Set mainIEObj = Nothing
@@ -123,11 +150,10 @@ Function ReadUserInfoFile(filePath)
     If firstChar = DEFINE_SINGLE_QUOTE Then
       ' skip comment
     Else
-      userInfo = Split(contextOfNoSpace, ",", SIZE_OF_USER_INFO_INDEX)
+      userInfo = Split(contextOfNoSpace, DEFINE_DELIM_CANMA, SIZE_OF_USER_INFO_INDEX)
       If UBound(userInfo) = SIZE_OF_USER_INFO_INDEX Then
         ' skip invalid format
       Else
-        logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "user info: " & contextOfNoSpace)
         currentUserInfoSize = UBound(userInfos)
         If currentUserInfoSize = -1 Then
           currentUserInfoSize = 0
@@ -376,16 +402,17 @@ End Function
 '*******************************************************************************
 ' RequestAndParsePage
 '   @param objIE [in] IE object
+'   @param sequenceNumber [in] sequence number
 '   @retval true/false true:continue, false:
 '*******************************************************************************
-Function RequestAndParsePage(objIE)
+Function RequestAndParsePage(objIE, sequenceNumber)
   Dim result
   result = False
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "RequestAndParsePage start")
   
   Dim objInputTags
-  Set objInputTags = objIE.getElementsByTagName(NAME_OF_INPUT_CHECK_BOX)
+  Set objInputTags = objIE.Document.getElementsByTagName(NAME_OF_INPUT)
   
   If objInputTags.Length = 0 Then
     Dim errorMessage
@@ -397,16 +424,41 @@ Function RequestAndParsePage(objIE)
     For indexOfInputTag = 0 To objInputTags.Length - 1
       Dim typeOfAttrName
       Dim nameOfAttrName
-      typeOfAttrName = objOfInputTag(indexOfInputTag).getAttribute(NAME_OF_ATTRIBUTE_TYPE)
-      nameOfAttrName = objOfInputTag(indexOfInputTag).getAttribute(NAME_OF_ATTRIBUTE_NAME)
-      If typeOfAttrName = NAME_OF_CHECKBOX Then
-        If IsCheckHightWayUse(objOfInputTag(indexOfInputTag)) = True Then
-          objOfInputTag(indexOfInputTag).Click()
+      typeOfAttrName = objInputTags(indexOfInputTag).getAttribute(NAME_OF_ATTRIBUTE_TYPE)
+      nameOfAttrName = objInputTags(indexOfInputTag).getAttribute(NAME_OF_ATTRIBUTE_NAME)
+      If typeOfAttrName = NAME_OF_CHECK_BOX Then
+        If IsCheckHightWayUse(objInputTags(indexOfInputTag)) = True Then
+          objInputTags(indexOfInputTag).Click()
         End If
       End If
-      
-      ' TODO
     Next
+  End If
+  
+  If IS_CONFORM_BEFORE_HIGHT_WAY_USE_DETERM = true Then
+    MsgBox "料金計算発行を実施します。" & DefineCrLr & "自動チェック内容を確認し、必要があればチェック操作してください。" & DefineCrLf & "確認完了後、「OK」を押してください。"
+  End If
+  
+  Dim bodyOfHtml
+  bodyOfHtml = objIE.Document.body.InnerHtml
+  
+  funcDummy = ParseBodyOfHtml(bodyOfHtml, objIE)
+  
+  If IS_SAVE_USE_CONTEXT_PDF = True Then
+    objIE.Document.forms(0).submit
+    
+    funcDummy = WaitIEObject(objIE, SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI)
+    
+    ' TODO windows control
+    Dim objShell
+    Dim objPDFOfIE
+    Set objShell = CreateObject(NAME_OF_SHELL_APPLICATION)
+    Set objPDFOfIE = objShell.Windows.Item(objShell.Windows.Count - 1)
+    
+    funcDummy = WaitIEObject(objPDFOfIE, SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI)
+    
+    Dim locationURL
+    locationURL = objPDFOfIE.LocationURL
+    funcDummy = GetHttp(locationURL, SAVE_PREFIX_OF_USE_CONTEXT_PDF & sequenceNumber & SAVE_SUFFIX_OF_USE_CONTEXT_PDF, PROXY_SERVER)
   End If
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "RequestAndParsePage end")
@@ -430,14 +482,33 @@ Function IsCheckHightWayUse(objElement)
   
   Dim targetHightWayUseParts
   targetHightWayUseParts = Split(targetHightWayUse, DefineCrLf)
-  If UBond(targetHightWayUseParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS Then
+logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "debug print: " & UBound(targetHightWayUseParts))
+logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "debug print: " & targetHightWayUse)
+  If UBound(targetHightWayUseParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS Then
+    ' Check
+    ' TODO
     
+    result = True
   End If
-  
-  ' TODO
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "IsCheckHightWayUse end")
   
   IsCheckHightWayUse = result
+End Function
+
+'*******************************************************************************
+' ParseBodyOfHtml
+'   @param bodyOfHtml [in] body of html
+'   @param objIE [in] object IE
+'   @retval 
+'*******************************************************************************
+Function ParseBodyOfHtml(bodyOfHtml, objIE)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ParseBodyOfHtml start")
+  
+  'TODO
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ParseBodyOfHtml end")
+  
+  'ParseBodyOfHtml = 
 End Function
 

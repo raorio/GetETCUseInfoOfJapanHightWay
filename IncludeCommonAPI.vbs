@@ -465,7 +465,7 @@ Function GetHttp(url, saveFilePath, proxyServer)
   
   On Error Resume Next
     For Each objName In httpObjectList
-      Set objHttp = CreageObject(MSXML2_XMLHTTP_3_0)
+      Set objHttp = CreateObject(objName)
       If Err.Number = 0 Then
         logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "http object: " & objName)
         Exit For
@@ -484,14 +484,14 @@ Function GetHttp(url, saveFilePath, proxyServer)
       funcDummy = objHttp.SetProxy(2, proxyServer, "")
     End If
     
-    objHttp.Open "GET", url, False
+    funcDummy = objHttp.Open("GET", url, False)
     objHttp.Send()
     
     If objHttp.Status = 200 Then
       logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "success http get: " & url)
       
       Dim objStream
-      Set objStream = CreateObject(ADOBJ_STREAM)
+      Set objStream = CreateObject(ADODB_STREAM)
       objStream.Open()
       objStream.Type = 1
       objStream.Write(objHttp.responseBody)

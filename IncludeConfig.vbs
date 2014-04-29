@@ -112,6 +112,9 @@ Const SIZE_OF_USER_INFO_INDEX = 2
 ' file name of user info
 Const FILE_NAME_OF_USER_INFO = "UserInfo.ini"
 
+' proxy server(if not use, brank)
+Const PROXY_SERVER = ""
+
 '---------------------------------------
 ' view parameter
 '---------------------------------------
@@ -120,6 +123,9 @@ Const SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI = 500
 
 ' show main Web GUI
 Const IS_SHOW_MAIN_WEB_GUI = true
+
+' is conform before hight way use determ
+Const IS_CONFORM_BEFORE_HIGHT_WAY_USE_DETERM = true
 
 '---------------------------------------
 ' etc site parameter
@@ -157,20 +163,29 @@ Const PRISE_PREFIX_VALUE = " \"
 ' prise suffix value
 Const PRISE_SUFFIX_VALUE = ""
 
-' name of input check box
-Const NAME_OF_INPUT_CHECK_BOX = "INPUT"
+' name of input
+Const NAME_OF_INPUT = "INPUT"
 
 ' name of input check box type
+Const NAME_OF_CHECK_BOX = "checkbox"
+
+' name of attribute type
 Const NAME_OF_ATTRIBUTE_TYPE = "type"
 
-' name of input check box name
+' name of attribute name
 Const NAME_OF_ATTRIBUTE_NAME = "name"
 
-' name of input check box type
-Const NAME_OF_CHECKBOX = "checkbox"
+' name of A name
+Const NAME_OF_A_NAME = "A"
+
+' name of attribute href
+Const NAME_OF_ATTRIBUTE_HREF = "href"
+
+' name of link page
+Const NAME_OF_LINK_PAGE = "&page="
 
 ' number of hight way use parts
-Const NUMBER_OF_HIGHT_WAY_USE_PARTS = 7
+Const NUMBER_OF_HIGHT_WAY_USE_PARTS = 8
 
 '---------------------------------------
 ' excel parameter

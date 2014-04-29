@@ -47,6 +47,9 @@ Const DEFINE_DELIM_DATE = "/"
 ' delim time
 Const DEFINE_DELIM_TIME = ":"
 
+' delim CONMA
+Const DEFINE_DELIM_CANMA = ","
+
 ' func dummy
 Dim funcDummy
 
@@ -82,6 +85,9 @@ Const ForAppending = 8
 ' name of IE application
 Const NAME_OF_IE_APPLICATION = "InternetExplorer.Application"
 
+' name of shell application
+Const NAME_OF_SHELL_APPLICATION = "Shell.Application"
+
 '-------------------
 ' http object
 '-------------------
@@ -105,7 +111,7 @@ httpObjectList(2) = MSXML_XMLHTTPREQUEST
 httpObjectList(3) = MICROSOFT_XMLHTTP
 
 ' ADOBJ.Stream
-Const ADOBJ_STREAM = "ADOBJ.Stream"
+Const ADODB_STREAM = "ADODB.Stream"
 
 '---------------------------------------
 ' log
