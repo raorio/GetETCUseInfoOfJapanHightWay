@@ -495,6 +495,7 @@ Function GetHttp(url, saveFilePath, proxyServer)
       objStream.Open()
       objStream.Type = 1
       objStream.Write(objHttp.responseBody)
+      objStream.SaveToFile(saveFilePath)
       objStream.Close()
       
       GetHttp = True

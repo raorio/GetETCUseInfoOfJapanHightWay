@@ -59,19 +59,19 @@ Function GetETCUseInfoOfJapanHightWay()
       ' error check
       ' TODO
       
+      Dim currentPage
+      currentPage = 1
       Dim sequenceNumber
       sequenceNumber = 0
       Dim isContinue
       isContinue = True
       ' request and parse
       Do Until isContinue = False
-logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetETCUseInfoOfJapanHightWay 4")
+        isContinue = False
         isContinue = RequestAndParsePage(mainIEObj, sequenceNumber)
-logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetETCUseInfoOfJapanHightWay 5")
         sequenceNumber = sequenceNumber + 1
         
         Dim objAOfTag
-logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetETCUseInfoOfJapanHightWay 6")
         Set objAOfTag = mainIEObj.Document.getElementsByTagName(NAME_OF_A_NAME)
         Dim indexOfATag
         Dim hrefName
@@ -79,10 +79,12 @@ logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetETCUseInfoOfJapanHightWa
           hrefName = objAOfTag(indexOfATag).getAttribute(NAME_OF_ATTRIBUTE_HREF)
           If hrefName <> DEFINE_BRANK Then
             Dim targetPage
+            targetPage = -1
             Dim hrefNameParts
             hrefNameParts = Split(hrefName, NAME_OF_LINK_PAGE)
             If UBound(hrefNameParts) = 1 Then
               targetPage = CInt(hrefNameParts(1))
+              logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "target page number is: " & targetPage & ". current page number is: " & currentPage)
             Else
               ' skip
             End If
@@ -90,11 +92,16 @@ logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetETCUseInfoOfJapanHightWa
             ' TODO
             
             If currentPage < targetPage Then
+              logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "target page is: " & hrefName)
               currentPage = targetPage
               objAOfTag(indexOfATag).Click
               indexOfATag = objAOfTag.Length
               
               funcDummy = WaitIEObject(mainIEObj, SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI)
+              
+              isContinue = True
+              
+              Exit For
             End If
           End If
         Next
@@ -463,6 +470,8 @@ Function RequestAndParsePage(objIE, sequenceNumber)
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "RequestAndParsePage end")
   
+  ' TODO
+  ' result
   RequestAndParsePage = result
 End Function
 
