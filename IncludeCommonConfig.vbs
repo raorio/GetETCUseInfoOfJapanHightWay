@@ -56,16 +56,7 @@ Dim funcDummy
 '---------------------------------------
 ' date time
 '---------------------------------------
-' yyyy-mm-dd hh-mm-ss date time formate
-Dim strDateTimeSystemTime
-strDateTimeSystemTime = Year(Now) & DEFINE_DELIM_DATE & Month(Now) & DEFINE_DELIM_DATE & Day(Now) & DEFINE_DELIM_DATE_TIME & Hour(Now) & DEFINE_DELIM_TIME & Minute(Now) & DEFINE_DELIM_TIME & Second(Now)
 
-' yyyymmddThhmmss date time formate
-Dim strDateTimeISO
-strDateTimeISO = Year(Now) & Month(Now) & Day(Now) & DEFINE_DELIM_ISO_DATE_TIME & Hour(Now) & Minute(Now) & Second(Now)
-
-' log date time
-strLogDateTime = strDateTimeSystemTime
 
 '---------------------------------------
 ' file system

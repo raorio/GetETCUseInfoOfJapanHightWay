@@ -7,6 +7,54 @@
 
 
 '-------------------------------------------------------------------------------
+' date api
+'-------------------------------------------------------------------------------
+'*******************************************************************************
+' getDateTime
+'   @param nothing
+'   @retval date time
+'*******************************************************************************
+Function getDateTime()
+  Dim result
+  
+  Dim yearValue
+  Dim monthValue
+  Dim dayValue
+  Dim hourValue
+  Dim minuteValue
+  Dim secondValue
+  yearValue = Year(Now)
+  monthValue = Month(Now)
+  dayValue = Day(Now)
+  hourValue = Hour(Now)
+  minuteValue = Minute(Now)
+  secondValue = Second(Now)
+  ' yyyy/mm/dd hh:mm:ss date time formate
+  ' TODO
+  'result = PaddingPrefixString(yearValue, "0", 4) & DEFINE_DELIM_DATE & PaddingPrefixString(monthValue, "0", 2) & DEFINE_DELIM_DATE & Day(Now) & DEFINE_DELIM_DATE_TIME & Hour(Now) & DEFINE_DELIM_TIME & Minute(Now) & DEFINE_DELIM_TIME & Second(Now)
+  result = Year(Now) & DEFINE_DELIM_DATE & Month(Now) & DEFINE_DELIM_DATE & Day(Now) & DEFINE_DELIM_DATE_TIME & Hour(Now) & DEFINE_DELIM_TIME & Minute(Now) & DEFINE_DELIM_TIME & Second(Now)
+  
+  getDateTime = result
+End Function
+
+'*******************************************************************************
+' getDateTimeAtISOFormat
+'   @param nothing
+'   @retval date time
+'*******************************************************************************
+Function getDateTimeAtISOFormat()
+  Dim result
+  
+  ' yyyymmddThhmmss date time formate
+  Dim strDateTimeISO
+  ' TODO
+  result = Year(Now) & Month(Now) & Day(Now) & DEFINE_DELIM_ISO_DATE_TIME & Hour(Now) & Minute(Now) & Second(Now)
+  
+  getDateTimeAtISOFormat = result
+End Function
+
+
+'-------------------------------------------------------------------------------
 ' log api
 '-------------------------------------------------------------------------------
 '*******************************************************************************
@@ -21,7 +69,7 @@ Function LogOut(targetLogLevel, logLevel, message)
   Dim logContext
   
   If logLevel <= targetLogLevel Then
-    logDatetime = strLogDateTime
+    logDatetime = getDateTime()
     
     logContext = logDatetime & DEFINE_SPACE & logLevelStrings(logLevel) & DEFINE_SPACE & message & DefineCrLf
     

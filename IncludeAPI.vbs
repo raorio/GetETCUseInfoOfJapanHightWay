@@ -435,7 +435,13 @@ Function RequestAndParsePage(objIE, sequenceNumber)
       nameOfAttrName = objInputTags(indexOfInputTag).getAttribute(NAME_OF_ATTRIBUTE_NAME)
       If typeOfAttrName = NAME_OF_CHECK_BOX Then
         If IsCheckHightWayUse(objInputTags(indexOfInputTag)) = True Then
-          objInputTags(indexOfInputTag).Click()
+          ' target hight way
+          ' if check by Click(), don't detect checked. there for check by SetAttribute
+          'objInputTags(indexOfInputTag).Click()
+          funcDummy = objInputTags(indexOfInputTag).SetAttribute(NAME_OF_CHECKED, NAME_OF_CHECKED_VALUE)
+        Else
+          ' not target hight way
+          ' skip
         End If
       End If
     Next
@@ -491,8 +497,6 @@ Function IsCheckHightWayUse(objElement)
   
   Dim targetHightWayUseParts
   targetHightWayUseParts = Split(targetHightWayUse, DefineCrLf)
-logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "debug print: " & UBound(targetHightWayUseParts))
-logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "debug print: " & targetHightWayUse)
   If UBound(targetHightWayUseParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS Then
     ' Check
     ' TODO
@@ -514,7 +518,44 @@ End Function
 Function ParseBodyOfHtml(bodyOfHtml, objIE)
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ParseBodyOfHtml start")
   
-  'TODO
+  Dim objInputTags
+  Set objInputTags = objIE.Document.getElementsByTagName(NAME_OF_INPUT)
+  Dim indexOfInput
+  For indexOfInput = 0 To objInputTags.Length - 1
+logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ParseBodyOfHtml index: " & indexOfInput)
+    Dim typeName
+    typeName = objInputTags(indexOfInput).getAttribute(NAME_OF_ATTRIBUTE_TYPE)
+    If typeName = NAME_OF_CHECK_BOX Then
+      Dim isCheckedAttribute
+      isCheckedAttribute = objInputTags(indexOfInput).getAttribute(NAME_OF_CHECKED)
+      ' if detect by true/false, don't detect checked. there for check by checked value(brank)
+      If isCheckedAttribute = NAME_OF_CHECKED_VALUE Then
+      'If isCheckedAttribute = true Then
+      'If isCheckedAttribute <> DEFINE_BRANK Then
+        ' checked
+        Dim inputBody
+        inputBody = objInputTags(indexOfInput).parentNode.parentNode.innerText
+logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ParseBodyOfHtml body: " & inputBody)
+        Dim inputBodyParts
+        inputBodyParts = Split(inputBody, DefineCrLf)
+        If UBound(inputBodyParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS Then
+          ' valid format
+          logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & inputBodyParts(NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS) & inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS) & inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS) & inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS) & inputBodyParts(NUMBER_OF_CACHE_HIGHT_WAY_USE_PARTS))
+          ' TODO
+          
+        Else
+          ' invalid format
+          ' skip
+        End If
+      Else
+        ' didn't check
+        ' skip
+      End If
+    Else
+      ' don't checkbox
+      ' skip
+    End If
+  Next
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ParseBodyOfHtml end")
   
