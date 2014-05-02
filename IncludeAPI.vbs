@@ -1,3 +1,26 @@
+'Option Explicit
+
+'-------------------------------------------------------------------------------
+Const NAME_OF_FILESYSTEM_IN_API = "Scripting.FileSystemObject"
+
+Dim FileShellInAPI
+Set FileShellInAPI = WScript.CreateObject(NAME_OF_FILESYSTEM_IN_API)
+
+Const FOR_READING_INCLUDE_IN_API = 1
+
+'*******************************************************************************
+' read vbs file in api
+'   @param FileName [in] read vbs file name
+'   @retval nothing
+'*******************************************************************************
+Function ReadVBSFileInAPI(ByVal FileName)
+  ReadVBSFileInAPI = FileShellInAPI.OpenTextFile(FileName, FOR_READING_INCLUDE_IN_API, False).ReadAll()
+End Function
+
+'Execute ReadVBSFileInAPI("IncludeCommonAPI.vbs")
+'Execute ReadVBSFileInAPI("IncludeConfig.vbs")
+
+
 '===============================================================================
 ' api
 '===============================================================================
@@ -12,6 +35,16 @@
 Function GetETCUseInfoOfJapanHightWay()
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetETCUseInfoOfJapanHightWay start")
   
+  Dim periodParams
+  Set periodParams = GetTargetPeriod(MODE_OF_AUTO_CALC_DATE)
+  
+  Dim targetCurrentYear
+  Dim targetCurrentMonth
+  Dim targetCurrentDay
+  targetCurrentYear = periodParams.Item(NAME_OF_USE_TO_YEAR)
+  targetCurrentMonth = periodParams.Item(NAME_OF_USE_TO_MONTH)
+  targetCurrentDay = periodParams.Item(NAME_OF_USE_TO_DAY)
+  
   ' get script file path
   Dim strSaveFilePath
   Dim strScriptPath
@@ -22,9 +55,6 @@ Function GetETCUseInfoOfJapanHightWay()
   
   Dim mainIEObj
   mainIEObj = CreateIEObject(isDispExecIE, URL_OF_ETC_SITE, webSleepTime)
-  
-  Dim periodParams
-  Set periodParams = GetTargetPeriod(MODE_OF_AUTO_CALC_DATE)
   
   Dim userInfos
   userInfos = ReadUserInfoFile(FILE_NAME_OF_USER_INFO)
@@ -59,6 +89,9 @@ Function GetETCUseInfoOfJapanHightWay()
       ' error check
       ' TODO
       
+      Dim useResult
+      Set useResult = CreateObject("Scripting.Dictionary")
+      
       Dim currentPage
       currentPage = 1
       Dim sequenceNumber
@@ -68,7 +101,7 @@ Function GetETCUseInfoOfJapanHightWay()
       ' request and parse
       Do Until isContinue = False
         isContinue = False
-        isContinue = RequestAndParsePage(mainIEObj, sequenceNumber)
+        isContinue = RequestAndParsePage(mainIEObj, sequenceNumber, useResult)
         sequenceNumber = sequenceNumber + 1
         
         Dim objAOfTag
@@ -106,6 +139,17 @@ Function GetETCUseInfoOfJapanHightWay()
           End If
         Next
       Loop
+      
+      Dim summaryResult
+      Set summaryResult = CreateObject("Scripting.Dictionary")
+      funcDummy = CountUseInfo(useResult, summaryResult)
+      
+      ' TODO
+      ' print debug
+      For Each key In summaryResult
+        logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "summary key: " & key)
+        logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "summary value: " & summaryResult.Item(key))
+      Next
       
       Set mainIEObj = Nothing
     End If
@@ -193,12 +237,12 @@ Function GetTargetPeriod(getMode)
   
   If getMode = 1 Then
     ' "auto 20 day per a month"
-    Set getPeriodHash = GetTargetPeriodByAuto20DayPerAMonth
+    Set getPeriodHash = GetTargetPeriodByAuto20DayPerAMonth()
   'ElseIf getTargetMode = "" Then
-  '  Set getPeriodHash = GetTargetPeriodByTODO
+  '  Set getPeriodHash = GetTargetPeriodByTODO()
   Else
     ' "auto 20 day per a month"
-    Set getPeriodHash = GetTargetPeriodByAuto20DayPerAMonth
+    Set getPeriodHash = GetTargetPeriodByAuto20DayPerAMonth()
   End If
   
   Set resultPeriodHash = PaddingTargetPeriod(getPeriodHash)
@@ -410,9 +454,10 @@ End Function
 ' RequestAndParsePage
 '   @param objIE [in] IE object
 '   @param sequenceNumber [in] sequence number
-'   @retval true/false true:continue, false:
+'   @param useResult [in/out] use result
+'   @retval true/false true:continue, false:not continue
 '*******************************************************************************
-Function RequestAndParsePage(objIE, sequenceNumber)
+Function RequestAndParsePage(objIE, sequenceNumber, useResult)
   Dim result
   result = False
   
@@ -454,7 +499,7 @@ Function RequestAndParsePage(objIE, sequenceNumber)
   Dim bodyOfHtml
   bodyOfHtml = objIE.Document.body.InnerHtml
   
-  funcDummy = ParseBodyOfHtml(bodyOfHtml, objIE)
+  funcDummy = ParseBodyOfHtml(bodyOfHtml, objIE, useResult)
   
   If IS_SAVE_USE_CONTEXT_PDF = True Then
     objIE.Document.forms(0).submit
@@ -483,7 +528,7 @@ End Function
 
 '*******************************************************************************
 ' IsTargetHightWayUse
-'   @param objElement [in] objElement
+'   @param objElement [in] object element
 '   @retval true/false true:target, false:not target
 '*******************************************************************************
 Function IsCheckHightWayUse(objElement)
@@ -513,16 +558,16 @@ End Function
 ' ParseBodyOfHtml
 '   @param bodyOfHtml [in] body of html
 '   @param objIE [in] object IE
-'   @retval 
+'   @param useResult [in/out] use result
+'   @retval nothing
 '*******************************************************************************
-Function ParseBodyOfHtml(bodyOfHtml, objIE)
+Function ParseBodyOfHtml(bodyOfHtml, objIE, useResult)
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ParseBodyOfHtml start")
   
   Dim objInputTags
   Set objInputTags = objIE.Document.getElementsByTagName(NAME_OF_INPUT)
   Dim indexOfInput
   For indexOfInput = 0 To objInputTags.Length - 1
-logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ParseBodyOfHtml index: " & indexOfInput)
     Dim typeName
     typeName = objInputTags(indexOfInput).getAttribute(NAME_OF_ATTRIBUTE_TYPE)
     If typeName = NAME_OF_CHECK_BOX Then
@@ -535,7 +580,6 @@ logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ParseBodyOfHtml index: " & 
         ' checked
         Dim inputBody
         inputBody = objInputTags(indexOfInput).parentNode.parentNode.innerText
-logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ParseBodyOfHtml body: " & inputBody)
         Dim inputBodyParts
         inputBodyParts = Split(inputBody, DefineCrLf)
         If UBound(inputBodyParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS Then
@@ -559,7 +603,9 @@ logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ParseBodyOfHtml body: " & i
           tollOfHightWayUse = tollOfHightWayUseParts(NUMBER_OF_TOLL_PARTS_IN_TOLL)
           logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & dateOfHightWayUse & DEFINE_SPACE & timeOfHightWayUse & DEFINE_SPACE & firstGateOfHightWayUse & DEFINE_SPACE & secondGateOfHightWayUse & DEFINE_SPACE & tollOfHightWayUse)
           
-          ' TODO
+          Dim key
+          key = CreateKeyFromHightWayUseInfo(dateOfHightWayUse, timeOfHightWayUse, firstGateOfHightWayUse, secondGateOfHightWayUse, tollOfHightWayUse)
+          funcDummy = useResult.Add(key, True)
         Else
           ' invalid format
           ' skip
@@ -577,5 +623,138 @@ logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ParseBodyOfHtml body: " & i
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ParseBodyOfHtml end")
   
   'ParseBodyOfHtml = 
+End Function
+
+'*******************************************************************************
+' CreateKeyFromHightWayUseInfo
+'   @param date [in] date
+'   @param time [in] time
+'   @param firstGate [in] first gate
+'   @param secondGate [in] second gate
+'   @param toll [in] toll
+'   @retval key
+'*******************************************************************************
+Function CreateKeyFromHightWayUseInfo(date, time, firstGate, secondGate, toll)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CreateKeyFromHightWayUseInfo start")
+  
+  Dim key
+  key = firstGate & DELIM_OF_GATE & secondGate & DELIM_OF_CATEGORY & toll & DELIM_OF_CATEGORY & date & DEFINE_SPACE & time
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CreateKeyFromHightWayUseInfo end")
+  
+  CreateKeyFromHightWayUseInfo = key
+End Function
+
+'*******************************************************************************
+' GetHightWayUseInfoFromKey
+'   @param key [in] key
+'   @retval key
+'*******************************************************************************
+Function GetHightWayUseInfoFromKey(key)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetHightWayUseInfoFromKey start")
+  
+  Dim categoryParts
+  categoryParts = Split(key, DELIM_OF_CATEGORY)
+  Dim gateParts
+  gateParts = Split(categoryParts(NUMBER_OF_GATE_AT_KEY), DELIM_OF_GATE)
+  Dim dateTimeParts
+  dateTimeParts = Split(categoryParts(NUMBER_OF_DATE_TIME_AT_KEY), DEFINE_SPACE)
+  
+  ' TODO
+  ReDim Preserve hightWayUseInfo(NUMBER_OF_SUMMARY_SIZE)
+  hightWayUseInfo(NUMBER_OF_FIRST_GATE_AT_SUMMARY) = gateParts(0)
+  hightWayUseInfo(NUMBER_OF_SECOND_GATE_AT_SUMMARY) = gateParts(1)
+  hightWayUseInfo(NUMBER_OF_TOLL_AT_SUMMARY) = categoryParts(NUMBER_OF_TOLL_AT_KEY)
+  hightWayUseInfo(NUMBER_OF_DATE_AT_SUMMARY) = dateTimeParts(0)
+  hightWayUseInfo(NUMBER_OF_TIME_AT_SUMMARY) = dateTimeParts(1)
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetHightWayUseInfoFromKey end")
+  
+  GetHightWayUseInfoFromKey = hightWayUseInfo
+End Function
+
+'*******************************************************************************
+' CountUseInfo
+'   @param useResult [in] use result
+'   @param summaryResult [in/out] summary result
+'   @retval nothing
+'*******************************************************************************
+Function CountUseInfo(useResult, summaryResult)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CountUseInfo start")
+  
+  If getMode = 1 Then
+    ' "auto 20 day per a month"
+    funcDummy = CountUseInfoByAuto20DayPerAMonth(useResult, summaryResult)
+  'ElseIf getTargetMode = "" Then
+  '  funcDummy = CountUseInfoByTODO(useResult, summaryResult)
+  Else
+    ' "auto 20 day per a month"
+    funcDummy = CountUseInfoByAuto20DayPerAMonth(useResult, summaryResult)
+  End If
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CountUseInfo end")
+  
+  'Set CountUseInfo = 
+End Function
+
+'*******************************************************************************
+' CountUseInfo
+'   @param useResult [in] use result
+'   @param summaryResult [in/out] summary result
+'   @retval nothing
+'*******************************************************************************
+Function CountUseInfoByAuto20DayPerAMonth(useResult, summaryResult)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CountUseInfoByAuto20DayPerAMonth start")
+  
+  Dim keys
+  keys = useResult.Keys()
+  
+  For Each key In keys
+    Dim useInfos
+    useInfos = GetHightWayUseInfoFromKey(key)
+logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CountUseInfoByAuto20DayPerAMonth " & key)
+    
+    Dim key
+    key = CreateKeyFromAuto20DayPerAMonth(useInfos)
+    
+    If summaryResult.Exists(key) = True Then
+      ' exist
+      Dim useCount
+      useCount = summaryResult.Item(key)
+      useCount = useCount + 1
+      'funcDummy = summaryResult.Add(key, useCount)
+      summaryResult.Item(key) = useCount
+    Else
+      ' don't exist
+      Dim firstUseCount
+      firstUseCount = 1
+      'funcDummy = summaryResult.Add(key, firstUseCount)
+      summaryResult.Item(key) = firstUseCount
+    End If
+  Next
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CountUseInfoByAuto20DayPerAMonth end")
+  
+  'Set CountUseInfoByAuto20DayPerAMonth = 
+End Function
+
+'*******************************************************************************
+' CreateKeyFromHightWayUseInfo
+'   @param useInfos [in] use info
+'   @retval key
+'*******************************************************************************
+Function CreateKeyFromAuto20DayPerAMonth(useInfos)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CreateKeyFromAuto20DayPerAMonth start")
+  
+  Dim month
+  Dim dateParts
+  dateParts = Split(useInfos(NUMBER_OF_DATE_AT_SUMMARY), DELIM_OF_DATE_AT_ETC_SITE)
+  
+  Dim key
+  key = useInfos(NUMBER_OF_FIRST_GATE_AT_SUMMARY) & DELIM_OF_GATE & useInfos(NUMBER_OF_SECOND_GATE_AT_SUMMARY) & DELIM_OF_CATEGORY & useInfos(NUMBER_OF_TOLL_AT_SUMMARY) & DELIM_OF_CATEGORY & dateParts(NUMBER_OF_YEAR_AT_DATE) & DEFINE_SPACE & dateParts(NUMBER_OF_MONTH_AT_DATE)
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CreateKeyFromAuto20DayPerAMonth end")
+  
+  CreateKeyFromAuto20DayPerAMonth = key
 End Function
 

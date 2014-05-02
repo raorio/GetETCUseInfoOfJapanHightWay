@@ -1,3 +1,25 @@
+'Option Explicit
+
+'-------------------------------------------------------------------------------
+Const NAME_OF_FILESYSTEM_IN_COMMON_API = "Scripting.FileSystemObject"
+
+Dim FileShellInCommonAPI
+Set FileShellInCommonAPI = WScript.CreateObject(NAME_OF_FILESYSTEM_IN_COMMON_API)
+
+Const FOR_READING_INCLUDE_IN_COMMON_API = 1
+
+'*******************************************************************************
+' read vbs file in common API
+'   @param FileName [in] read vbs file name
+'   @retval nothing
+'*******************************************************************************
+Function ReadVBSFileInCommonAPI(ByVal FileName)
+  ReadVBSFileInCommonAPI = FileShellInCommonAPI.OpenTextFile(FileName, FOR_READING_INCLUDE_IN_COMMON_API, False).ReadAll()
+End Function
+
+'Execute ReadVBSFileInCommonAPI("IncludeCommonConfig.vbs")
+
+
 '===============================================================================
 ' api
 '===============================================================================
@@ -69,9 +91,10 @@ Function LogOut(targetLogLevel, logLevel, message)
   Dim logContext
   
   If logLevel <= targetLogLevel Then
-    logDatetime = getDateTime()
+    Dim logDateTime
+    logDateTime = getDateTime()
     
-    logContext = logDatetime & DEFINE_SPACE & logLevelStrings(logLevel) & DEFINE_SPACE & message & DefineCrLf
+    logContext = logDateTime & DEFINE_SPACE & logLevelStrings(logLevel) & DEFINE_SPACE & message & DefineCrLf
     
     funcDummy = appendFile(logFilePath, logContext)
   End If
@@ -430,6 +453,7 @@ Function DeleteSpace2MoreSpace(targetString)
   lengthString = Len(targetString)
   replaceString = targetString
   
+  Dim i
   For i = lengthString To 2 Step -1
     Dim strChars
     strChars = Space(i)
@@ -455,6 +479,7 @@ Function PaddingPrefixString(targetString, paddingChar, paddingSize)
   paddingString = ""
   lengthString = Len(targetString)
   
+  Dim i
   For i = paddingSize - 1 To lengthString Step -1
     paddingString = paddingString & paddingChar
   Next
@@ -480,6 +505,7 @@ Function PaddingSuffixString(targetString, paddingChar, paddingSize)
   paddingString = ""
   lengthString = Len(targetString)
   
+  Dim i
   For i = paddingSize - 1 To lengthString Step -1
     paddingString = paddingString & paddingChar
   Next

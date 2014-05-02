@@ -211,6 +211,80 @@ Const NAME_OF_CHECKED_VALUE = "CHECKED_VALUE"
 ' number of toll in toll parts
 Const NUMBER_OF_TOLL_PARTS_IN_TOLL = 0
 
+
+'---------------------------------------
+' summary parameter
+'---------------------------------------
+' delim of category
+Const DELIM_OF_CATEGORY = ","
+
+' delim of GATE
+Const DELIM_OF_GATE = "-"
+
+' number of key size
+Const NUMBER_OF_KEY_SIZE = 3
+
+' number of gate at key
+Const NUMBER_OF_GATE_AT_KEY = 0
+
+' number of toll at key
+Const NUMBER_OF_TOLL_AT_KEY = 1
+
+' number of date time at key
+Const NUMBER_OF_DATE_TIME_AT_KEY = 2
+
+' number of gate size
+Const NUMBER_OF_GATE_SIZE = 2
+
+' number of first gate at gate
+Const NUMBER_OF_FIRST_GATE_AT_GATE = 0
+
+' number of second gate at gate
+Const NUMBER_OF_SECOND_GATE_AT_GATE = 1
+
+' number of date time size
+Const NUMBER_OF_DATE_TIME_SIZE = 2
+
+' number of date at date time
+Const NUMBER_OF_DATE_AT_DATE_TIME = 0
+
+' number of time at date time
+Const NUMBER_OF_TIME_AT_DATE_TIME = 1
+
+' number of date siez
+Const NUMBER_OF_DATE_SIZE = 3
+
+' number of year at date
+Const NUMBER_OF_YEAR_AT_DATE = 0
+
+' number of month at date
+Const NUMBER_OF_MONTH_AT_DATE = 1
+
+' number of day at date
+Const NUMBER_OF_DAY_AT_DATE = 2
+
+' number of summary size
+Const NUMBER_OF_SUMMARY_SIZE = 5
+
+' number of first gate at summary
+Const NUMBER_OF_FIRST_GATE_AT_SUMMARY = 0
+
+' number of second gate at summary
+Const NUMBER_OF_SECOND_GATE_AT_SUMMARY = 1
+
+' number of toll at summary
+Const NUMBER_OF_TOLL_AT_SUMMARY = 2
+
+' number of date at summary
+Const NUMBER_OF_DATE_AT_SUMMARY = 3
+
+' number of time at summary
+Const NUMBER_OF_TIME_AT_SUMMARY = 4
+
+' delim of date at etc site
+Const DELIM_OF_DATE_AT_ETC_SITE = "/"
+
+
 '---------------------------------------
 ' excel parameter
 '---------------------------------------
