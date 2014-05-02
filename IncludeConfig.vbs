@@ -199,14 +199,17 @@ Const NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS = 5
 ' number of second gate in hight way use parts
 Const NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS = 6
 
-' number of cache in hight way use parts
-Const NUMBER_OF_CACHE_HIGHT_WAY_USE_PARTS = 8
+' number of toll in hight way use parts
+Const NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS = 8
 
 ' name of checked
 Const NAME_OF_CHECKED = "CHECKED"
 
 ' name of checked value
 Const NAME_OF_CHECKED_VALUE = "CHECKED_VALUE"
+
+' number of toll in toll parts
+Const NUMBER_OF_TOLL_PARTS_IN_TOLL = 0
 
 '---------------------------------------
 ' excel parameter

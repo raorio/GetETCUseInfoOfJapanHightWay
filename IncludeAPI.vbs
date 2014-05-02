@@ -540,9 +540,26 @@ logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ParseBodyOfHtml body: " & i
         inputBodyParts = Split(inputBody, DefineCrLf)
         If UBound(inputBodyParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS Then
           ' valid format
-          logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & inputBodyParts(NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS) & inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS) & inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS) & inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS) & inputBodyParts(NUMBER_OF_CACHE_HIGHT_WAY_USE_PARTS))
-          ' TODO
+          logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & inputBodyParts(NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS) & inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS) & inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS) & inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS) & inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS))
+          Dim dateOfHightWayUse
+          Dim timeOfHightWayUse
+          Dim firstGateOfHightWayUse
+          Dim secondGateOfHightWayUse
+          Dim tollOfHightWayUse
+          dateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS))
+          timeOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS))
+          firstGateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS))
+          secondGateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS))
+          Dim tollOfHightWayUseDeleteSpace
+          tollOfHightWayUseDeleteSpace = DeleteSpace2MoreSpace(inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS))
+          Dim tollOfHightWayUseDeleteSpaceAndYen
+          tollOfHightWayUseDeleteSpaceAndYen = Replace(tollOfHightWayUseDeleteSpace, PRISE_PREFIX_VALUE, DEFINE_BRANK)
+          Dim tollOfHightWayUseParts
+          tollOfHightWayUseParts = Split(tollOfHightWayUseDeleteSpaceAndYen, DEFINE_SPACE)
+          tollOfHightWayUse = tollOfHightWayUseParts(NUMBER_OF_TOLL_PARTS_IN_TOLL)
+          logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & dateOfHightWayUse & DEFINE_SPACE & timeOfHightWayUse & DEFINE_SPACE & firstGateOfHightWayUse & DEFINE_SPACE & secondGateOfHightWayUse & DEFINE_SPACE & tollOfHightWayUse)
           
+          ' TODO
         Else
           ' invalid format
           ' skip
