@@ -90,12 +90,12 @@ Function GetETCUseInfoOfJapanHightWay()
       ' TODO
       
       Dim useResult
-      Set useResult = CreateObject("Scripting.Dictionary")
+      Set useResult = CreateObject(NAME_OF_SCRIPTING_DICTIONARY)
       
       Dim currentPage
       currentPage = 1
       Dim sequenceNumber
-      sequenceNumber = 0
+      sequenceNumber = 1
       Dim isContinue
       isContinue = True
       ' request and parse
@@ -141,7 +141,7 @@ Function GetETCUseInfoOfJapanHightWay()
       Loop
       
       Dim summaryResult
-      Set summaryResult = CreateObject("Scripting.Dictionary")
+      Set summaryResult = CreateObject(NAME_OF_SCRIPTING_DICTIONARY)
       funcDummy = CountUseInfo(useResult, summaryResult)
       
       ' TODO
@@ -151,9 +151,13 @@ Function GetETCUseInfoOfJapanHightWay()
         logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "summary value: " & summaryResult.Item(key))
       Next
       
+      funcDummy = SaveSummaryInExcel(strScriptPath & FILE_NAME_OF_EXCEL, summaryResult)
+      
       Set mainIEObj = Nothing
     End If
   Next
+  
+  
   
   ' TODO
   
@@ -297,7 +301,7 @@ Function GetTargetPeriodByAuto20DayPerAMonth()
     targetCurrentMonth = 12
   End If
   
-  Set resultPeriodHash = CreateObject("Scripting.Dictionary")
+  Set resultPeriodHash = CreateObject(NAME_OF_SCRIPTING_DICTIONARY)
   funcDummy = resultPeriodHash.Add(NAME_OF_USE_FROM_YEAR, targetPrevYear)
   funcDummy = resultPeriodHash.Add(NAME_OF_USE_FROM_MONTH, targetPrevMonth)
   funcDummy = resultPeriodHash.Add(NAME_OF_USE_FROM_DAY, targetPrevDay)
@@ -344,7 +348,7 @@ Function PaddingTargetPeriod(periodParams)
   targetCurrentMonth = PaddingPrefixString(periodParams(NAME_OF_USE_TO_MONTH), "0", 2)
   targetCurrentDay = PaddingPrefixString(periodParams(NAME_OF_USE_TO_DAY), "0", 2)
   
-  Set resultPeriodHash = CreateObject("Scripting.Dictionary")
+  Set resultPeriodHash = CreateObject(NAME_OF_SCRIPTING_DICTIONARY)
   funcDummy = resultPeriodHash.Add(NAME_OF_USE_FROM_YEAR, targetPrevYear)
   funcDummy = resultPeriodHash.Add(NAME_OF_USE_FROM_MONTH, targetPrevMonth)
   funcDummy = resultPeriodHash.Add(NAME_OF_USE_FROM_DAY, targetPrevDay)
@@ -712,7 +716,6 @@ Function CountUseInfoByAuto20DayPerAMonth(useResult, summaryResult)
   For Each key In keys
     Dim useInfos
     useInfos = GetHightWayUseInfoFromKey(key)
-logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CountUseInfoByAuto20DayPerAMonth " & key)
     
     Dim key
     key = CreateKeyFromAuto20DayPerAMonth(useInfos)
@@ -756,5 +759,55 @@ Function CreateKeyFromAuto20DayPerAMonth(useInfos)
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CreateKeyFromAuto20DayPerAMonth end")
   
   CreateKeyFromAuto20DayPerAMonth = key
+End Function
+
+'*******************************************************************************
+' SaveSummaryInExcel
+'   @param filePath [in] file path
+'   @param summaryResult [in] summary
+'   @retval key
+'*******************************************************************************
+Function SaveSummaryInExcel(filePath, summaryResult)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SaveSummaryInExcel start")
+  
+  Dim objExcel
+  Set objExcel = CreateEXCELObject(IS_SHOW_EXCEL_WINDOW)
+  
+  ' open
+  funcDummy = OpenWorkBooksOfExcel(objExcel, filePath)
+  
+  ' set
+  Dim collOfCell
+  collOfCell = 1
+  Dim valueOfCell
+  For Each key In summaryResult
+    Dim keyParts
+    keyParts = Split(key, DEFINE_DELIM_CANMA)
+    
+    Dim gates
+    Dim toll
+    Dim date
+    Dim count
+    gates = keyParts(0)
+    toll = keyParts(1)
+    date = keyParts(2)
+    count = summaryResult.Item(key)
+    
+    ' gates
+    funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, ROW_OF_GATES_CELL, collOfCell, gates)
+    ' toll
+    funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, ROW_OF_TOLL_CELL, collOfCell, toll)
+    ' date
+    funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, ROW_OF_DATE_CELL, collOfCell, date)
+    ' count
+    funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, ROW_OF_COUNT_CELL, collOfCell, count)
+    
+    collOfCell = collOfCell + 1
+  Next
+  
+  ' save
+  funcDummy = SaveOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK)
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SaveSummaryInExcel end")
 End Function
 

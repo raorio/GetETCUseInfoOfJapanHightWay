@@ -587,21 +587,21 @@ End Function
 '-------------------------------------------------------------------------------
 ' object api
 '-------------------------------------------------------------------------------
-'-------------------------------------------------------------------------------
+'---------------------------------------
 ' IE object api
-'-------------------------------------------------------------------------------
+'---------------------------------------
 '*******************************************************************************
 ' CreateIEObject
-'   @param isShowIEWindow [in] is show IE window(true or false)
+'   @param isShowWindow [in] is show window(true or false)
 '   @param url [in] url
 '   @param waitTime [in] wait time
 '   @retval IE object
 '*******************************************************************************
-Function CreateIEObject(isShowIEWindow, url, waitTime)
+Function CreateIEObject(isShowWindow, url, waitTime)
   Dim objIE
   
   Set objIE = WScript.CreateObject(NAME_OF_IE_APPLICATION)
-  objIE.Visible = isShowIEWindow
+  objIE.Visible = isShowWindow
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "web access start url: " & url)
   
@@ -626,5 +626,68 @@ Function WaitIEObject(objIE, waitTime)
       WScript.Sleep waitTime
     Wend
   End If
+End Function
+
+'---------------------------------------
+' excel object api
+'---------------------------------------
+'*******************************************************************************
+' CreateEXCELObject
+'   @param isShowWindow [in] is show window(true or false)
+'   @retval excel object
+'*******************************************************************************
+Function CreateEXCELObject(isShowWindow)
+  Dim objExcel
+  
+  Set objExcel = WScript.CreateObject(NAME_OF_EXCEL_APPLICATION)
+  objExcel.Visible = isShowWindow
+  
+  Set CreateEXCELObject = objExcel
+End Function
+
+'*******************************************************************************
+' OpenWorkBooksOfExcel
+'   @param objExcel [in] object excel
+'   @param filePath [in] file path
+'   @retval nothing
+'*******************************************************************************
+Function OpenWorkBooksOfExcel(objExcel, filePath)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "OpenWorkBooksOfExcel start")
+  
+  logReturnValueDummy = logOutInfo(LOG_TARGET_LEVEL, "start excel open:" & filePath)
+  
+  objExcel.Workbooks.Open(filePath)
+  
+  logReturnValueDummy = logOutInfo(LOG_TARGET_LEVEL, "end excel open:" & filePath)
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "OpenWorkBooksOfExcel end")
+End Function
+
+'*******************************************************************************
+' SetCellsOfExcel
+'   @param objExcel [in] object excel
+'   @param numberOfWorkBook [in] number of work book
+'   @param numberOfWorkSheet [in] number of work sheet
+'   @param nameOfCellRow [in] name of cell row
+'   @param nameOfCellColl [in] number of cell coll
+'   @param valueOfCell [in] value of cell
+'   @retval nothing
+'*******************************************************************************
+Function SetCellsOfExcel(objExcel, numberOfWorkBook, numberOfWorkSheet, nameOfCellRow, nameOfCellColl, valueOfCell)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SetCellsOfExcel start")
+  
+  objExcel.Workbooks(numberOfWorkBook).Worksheets(numberOfWorkSheet).Cells(nameOfCellColl, nameOfCellRow) = valueOfCell
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SetCellsOfExcel end")
+End Function
+
+'*******************************************************************************
+' SaveOfExcel
+'   @param objExcel [in] object excel
+'   @param numberOfWorkBook [in] number of work book
+'   @retval nothing
+'*******************************************************************************
+Function SaveOfExcel(objExcel, numberOfWorkBook)
+  objExcel.Workbooks(numberOfWorkBook).Save()
 End Function
 

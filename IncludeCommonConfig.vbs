@@ -79,6 +79,12 @@ Const NAME_OF_IE_APPLICATION = "InternetExplorer.Application"
 ' name of shell application
 Const NAME_OF_SHELL_APPLICATION = "Shell.Application"
 
+' name of excel application
+Const NAME_OF_EXCEL_APPLICATION = "Excel.Application"
+
+' name of scripting dictionary
+Const NAME_OF_SCRIPTING_DICTIONARY = "Scripting.Dictionary"
+
 '-------------------
 ' http object
 '-------------------

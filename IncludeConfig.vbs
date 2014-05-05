@@ -125,7 +125,8 @@ Const SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI = 500
 Const IS_SHOW_MAIN_WEB_GUI = true
 
 ' is conform before hight way use determ
-Const IS_CONFORM_BEFORE_HIGHT_WAY_USE_DETERM = true
+'Const IS_CONFORM_BEFORE_HIGHT_WAY_USE_DETERM = true
+Const IS_CONFORM_BEFORE_HIGHT_WAY_USE_DETERM = false
 
 '---------------------------------------
 ' etc site parameter
@@ -288,7 +289,29 @@ Const DELIM_OF_DATE_AT_ETC_SITE = "/"
 '---------------------------------------
 ' excel parameter
 '---------------------------------------
+' file name of excel
+Const FILE_NAME_OF_EXCEL = "UseSummary.xlsx"
 
+' is show excel window
+Const IS_SHOW_EXCEL_WINDOW = true
+
+' number of first workbook
+Const NUMBER_OF_FIRST_WORKBOOK = 1
+
+' number of first worksheet
+Const NUMBER_OF_FIRST_WORKSHEET = 1
+
+' row of gates cell
+Const ROW_OF_GATES_CELL = 1
+
+' row of toll cell
+Const ROW_OF_TOLL_CELL = 2
+
+' row of date cell
+Const ROW_OF_DATE_CELL = 3
+
+' row of count cell
+Const ROW_OF_COUNT_CELL = 4
 
 '---------------------------------------
 ' save parameter
