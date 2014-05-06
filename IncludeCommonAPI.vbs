@@ -194,7 +194,7 @@ End Function
 Function CreateFolder(folderPath)
   Dim objFileSys
   
-  Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
+  Set objFileSys = WScript.CreateObject(NAME_OF_SCRIPTING_FILESYSTEMOBJECT)
   
   If objFileSys.FolderExists(folderPath) = false Then
     objFileSys.CreateFolder folderPath
@@ -213,7 +213,7 @@ Function IsExistFolder(folderPath)
   Dim result
   Dim objFileSys
   
-  Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
+  Set objFileSys = WScript.CreateObject(NAME_OF_SCRIPTING_FILESYSTEMOBJECT)
   
   result = objFileSys.FolderExists(folderPath)
   
@@ -233,7 +233,7 @@ End Function
 Function CreateFile(filePath)
   Dim objFileSys
   
-  Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
+  Set objFileSys = WScript.CreateObject(NAME_OF_SCRIPTING_FILESYSTEMOBJECT)
   
   If objFileSys.FileExists(filePath) = true Then
     objFileSys.DeleteFile filePath
@@ -252,7 +252,7 @@ Function IsExistFile(filePath)
   Dim result
   Dim objFileSys
   
-  Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
+  Set objFileSys = WScript.CreateObject(NAME_OF_SCRIPTING_FILESYSTEMOBJECT)
   
   result = objFileSys.FileExists(filePath)
   
@@ -271,7 +271,7 @@ Function AppendFile(filePath, context)
   Dim objFileSys
   Dim resStream
   
-  Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
+  Set objFileSys = WScript.CreateObject(NAME_OF_SCRIPTING_FILESYSTEMOBJECT)
   Set resStream = objFileSys.OpenTextFile(filePath, ForAppending)
   
   resStream.Write(context)
@@ -289,7 +289,7 @@ End Function
 Function ReadFileAllContext(filePath)
   Dim objFileSys
   
-  Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
+  Set objFileSys = WScript.CreateObject(NAME_OF_SCRIPTING_FILESYSTEMOBJECT)
   If objFileSys.FileExists(filePath) = false Then
     logReturnValueDummy = LogOut(logLevelError, "file don't exist: " & filePath)
     Set ReadFileAllContext = Nothing
@@ -333,7 +333,7 @@ End Function
 Function OpenFileToRead(filePath)
   Dim objFileSys
   
-  Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
+  Set objFileSys = WScript.CreateObject(NAME_OF_SCRIPTING_FILESYSTEMOBJECT)
   If objFileSys.FileExists(filePath) = false Then
     logReturnValueDummy = LogOut(logLevelError, "file don't exist: " & filePath)
     Set OpenFileToRead = Nothing
@@ -352,7 +352,7 @@ End Function
 Function OpenFileToWrite(filePath)
   Dim objFileSys
   
-  Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
+  Set objFileSys = WScript.CreateObject(NAME_OF_SCRIPTING_FILESYSTEMOBJECT)
   Set resStream = objFileSys.OpenTextFile(filePath, ForWriting)
 End Function
 
@@ -364,7 +364,7 @@ End Function
 Function OpenFileToAppend(filePath)
   Dim objFileSys
   
-  Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
+  Set objFileSys = WScript.CreateObject(NAME_OF_SCRIPTING_FILESYSTEMOBJECT)
   If objFileSys.FileExists(filePath) = false Then
     logReturnValueDummy = LogOut(logLevelError, "file don't exist: " & filePath)
     Set OpenFileToAppend = Nothing
@@ -415,7 +415,7 @@ End Function
 Function DeleteFile(filePath)
   Dim objFileSys
   
-  Set objFileSys = WScript.CreateObject("Scripting.FileSystemObject")
+  Set objFileSys = WScript.CreateObject(NAME_OF_SCRIPTING_FILESYSTEMOBJECT)
   
   If objFileSys.FileExists(filePath) = true Then
     objFileSys.DeleteFile filePath
@@ -423,6 +423,160 @@ Function DeleteFile(filePath)
   
   Set objFileSys = Nothing
 End Function
+
+'-------------------
+' ini file api
+'-------------------
+'*******************************************************************************
+' CreateParameterDataHashFromIniFileContext
+'   @param iniFileContext [in] ini file context
+'   @retval parameter data hash
+'*******************************************************************************
+Function CreateParameterDataHashFromIniFileContext(iniFileContext)
+  Dim parameterDataArray
+  
+  parameterDataArray = Split(iniFileContext, DefineCrLf)
+  
+  Dim parameterDataHash
+  Set parameterDataHash = WScript.CreateObject(NAME_OF_SCRIPTING_DICTIONARY)
+  
+  Dim indexOfParameterData
+  For indexOfParameterData = LBound(parameterDataArray) To UBound(parameterDataArray)
+    Dim isExistConst
+    isExistConst = InStr(parameterDataArray, "Const ")
+    Dim parameterName
+    Dim parameterValue
+    If isExistCount <> 0 Then
+      ' exist Const
+      ' TODO
+    Else
+      ' not exist Const
+      Dim noSpaceParameterData
+      ' TODO consider include space
+      noSpaceParameterData = DeleteSpace(parameterDataArray(indexOfParameterData))
+      Dim parameterNameAndValue
+      parameterNameAndValue = Split(noSpaceParamterData, DEFINE_EQUAL, 1)
+      parameterName = parameterNameAndValue(0)
+      parameterValue = parameterNameAndValue(1)
+    End If
+    funcDummy = SetValueToParameterDataHash(parameterName, parameterValue, parameterDataHash)
+  Next
+  
+  Set CreateParameterDataHashFromIniFileContext = parameterDataHash
+End Function
+
+'*******************************************************************************
+' SetValueToParameterDataHash
+'   @param parameterName [in] parameter name
+'   @param parameterValue [in] parameter value
+'   @param parameterDataHash [in/out] parameter data hash
+'   @retval nothing
+'*******************************************************************************
+Function SetValueToParameterDataHash(parameterName, parameterValue, parameterDataHash)
+  If parameterDataHash.Exists(parameterName) = True Then
+    parameterDataHash.Item(parameterName) = parameterValue
+  Else
+    funcDummy = parameterDataHash.Add(parameterName, parameterValue)
+  End If
+End Function
+
+'*******************************************************************************
+' SetValueToParameterDataHashForString
+'   @param parameterName [in] parameter name
+'   @param parameterValue [in] parameter value
+'   @param parameterDataHash [in/out] parameter data hash
+'   @retval nothing
+'*******************************************************************************
+Function SetValueToParameterDataHashForString(parameterName, parameterValue, parameterDataHash)
+  Dim stringParameterValue
+  stringParameterValue = DEFINE_DOUBLE_QUOTE & parameterValue & DEFINE_DOUBLE_QUOTE
+  funcDummy = SetValueToParameterDataHash(parameterName, stringParameterValue, parameterDataHash)
+End Function
+
+'*******************************************************************************
+' SaveParameterDataHashToIniFile
+'   @param parameterDataHash [in] parameter data hash
+'   @param filePath [in] file path
+'   @retval nothing
+'*******************************************************************************
+Function SaveParameterDataHashToIniFile(parameterDataHash, filePath)
+  Dim objFile
+  Set objFile = CreateFile(filePath)
+  
+  Dim keys
+  keys = parameterDataHash.Keys()
+  For Each key In keys
+    funcDummy = WriteToObjectFile(objFile, key & DEFINE_EQUAL & parameterDataHash.Item(key))
+  Next
+  
+  CloseObjectFile(objFile)
+  
+  Set objFile = Nothing
+End Function
+
+'*******************************************************************************
+' CreateParameterDataArrayFromIniFileContext
+'   @param iniFileContext [in] ini file context
+'   @retval parameter data hash
+'*******************************************************************************
+Function CreateParameterDataArrayFromIniFileContext(iniFileContext)
+  Dim parameterDataArray
+  
+  parameterDataArray = Split(iniFileContext, DefineCrLf)
+  
+  ' TODO
+  
+  Set CreateParameterDataArrayFromIniFileContext = parameterDataArray
+End Function
+
+'*******************************************************************************
+' SetParameterValue
+'   @param parameterName [in] parameter name
+'   @param parameterValue [in] parameter value
+'   @param parameterDataArray [in/out] parameter data array
+'   @retval nothing
+'*******************************************************************************
+Function SetParameterDataToValue(parameterName, parameterValue, parameterDataArray)
+  For Each parameterData In parameterDataArray
+    ' TODO consider include space
+    Dim noSpaceParameterData
+    noSpaceParameterData = DeleteSpace(parameterData)
+    ' TODO
+  Next
+End Function
+
+'*******************************************************************************
+' SetParameterValueForString
+'   @param parameterName [in] parameter name
+'   @param parameterValue [in] parameter value
+'   @param parameterDataArray [in/out] parameter data array
+'   @retval nothing
+'*******************************************************************************
+Function SetValueToParameterDataHashForString(parameterName, parameterValue, parameterDataArray)
+  Dim stringParameterValue
+  stringParameterValue = DEFINE_DOUBLE_QUOTE & parameterValue & DEFINE_DOUBLE_QUOTE
+  funcDummy = SetParameterDataToValue(parameterName, stringParameterValue, parameterDataArray)
+End Function
+
+'*******************************************************************************
+' SaveParameterDataArrayToIniFile
+'   @param parameterDataArray [in] parameter data array
+'   @param filePath [in] file path
+'   @retval nothing
+'*******************************************************************************
+Function SaveParameterDataArrayToIniFile(parameterDataArray, filePath)
+  Dim objFile
+  Set objFile = CreateFile(filePath)
+  
+  For Each parameterData In parameterDataArray
+    funcDummy = WriteToObjectFile(objFile, parameterData)
+  Next
+  
+  CloseObjectFile(objFile)
+  
+  Set objFile = Nothing
+End Function
+
 
 '-------------------------------------------------------------------------------
 ' string api
@@ -513,6 +667,25 @@ Function PaddingSuffixString(targetString, paddingChar, paddingSize)
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "PaddingSuffixString end")
   
   PaddingSuffixString = targetString & paddingString
+End Function
+
+'*******************************************************************************
+' MatchRegex
+'   @param targetString [in] target string
+'   @param regexString [in] regex string
+'   @param ignoreCase [in] ignore case(true/false)
+'   @retval collection
+'*******************************************************************************
+Function MatchRegex(targetString, regexString, ignoreCase)
+  Dim regex
+  Dim matches
+  Set regex = New RegExp
+  regex.Pattern = regexString
+  regex.IgnoreCase = ignoreCase
+  regex.Global = True
+  Set matches = regex.Execute(strng)
+  
+  MatchRegex = matches
 End Function
 
 

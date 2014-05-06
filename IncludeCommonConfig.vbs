@@ -17,6 +17,9 @@ Const DEFINE_SPACE = " "
 ' hyphen
 Const DEFINE_HYPHEN = "-"
 
+' squal
+Const DEFINE_EQUAL = "="
+
 ' hyphen
 Const DEFINE_SLASH = "/"
 
@@ -73,6 +76,12 @@ Const ForAppending = 8
 '---------------------------------------
 ' object
 '---------------------------------------
+' name of scripting file system object
+Const NAME_OF_SCRIPTING_FILESYSTEMOBJECT = "Scripting.FileSystemObject"
+
+' name of scripting dictionary
+Const NAME_OF_SCRIPTING_DICTIONARY = "Scripting.Dictionary"
+
 ' name of IE application
 Const NAME_OF_IE_APPLICATION = "InternetExplorer.Application"
 
@@ -81,9 +90,6 @@ Const NAME_OF_SHELL_APPLICATION = "Shell.Application"
 
 ' name of excel application
 Const NAME_OF_EXCEL_APPLICATION = "Excel.Application"
-
-' name of scripting dictionary
-Const NAME_OF_SCRIPTING_DICTIONARY = "Scripting.Dictionary"
 
 '-------------------
 ' http object
