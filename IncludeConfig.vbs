@@ -185,23 +185,41 @@ Const NAME_OF_ATTRIBUTE_HREF = "href"
 ' name of link page
 Const NAME_OF_LINK_PAGE = "&page="
 
-' number of hight way use parts
-Const NUMBER_OF_HIGHT_WAY_USE_PARTS = 8
+' number of hight way use parts for IE 10
+Const NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE10 = 8
 
-' number of date in hight way use parts
-Const NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS = 3
+' number of date in hight way use parts for IE 10
+Const NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS_FOR_IE10 = 3
 
-' number of time in hight way use parts
-Const NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS = 4
+' number of time in hight way use parts for IE 10
+Const NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE10 = 4
 
-' number of first gate in hight way use parts
-Const NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS = 5
+' number of first gate in hight way use parts for IE 10
+Const NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10 = 5
 
-' number of second gate in hight way use parts
-Const NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS = 6
+' number of second gate in hight way use parts for IE 10
+Const NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10 = 6
 
-' number of toll in hight way use parts
-Const NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS = 8
+' number of toll in hight way use parts for IE 10
+Const NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE10 = 8
+
+' number of hight way use parts for IE 8
+Const NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE8 = 7
+
+' number of date in hight way use parts for IE 8
+Const NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS_FOR_IE8 = 2
+
+' number of time in hight way use parts for IE 8
+Const NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE8 = 3
+
+' number of first gate in hight way use parts for IE 8
+Const NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8 = 4
+
+' number of second gate in hight way use parts for IE 8
+Const NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8 = 5
+
+' number of toll in hight way use parts for IE 8
+Const NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE8 = 7
 
 ' name of checked
 Const NAME_OF_CHECKED = "CHECKED"
