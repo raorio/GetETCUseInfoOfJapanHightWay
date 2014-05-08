@@ -495,9 +495,10 @@ Function RequestAndParsePage(objIE, sequenceNumber, useResult)
   Dim bodyOfHtml
   bodyOfHtml = objIE.Document.body.InnerHtml
   
-  funcDummy = ParseBodyOfHtml(bodyOfHtml, objIE, useResult)
+  Dim isExistCheck
+  isExistCheck = ParseBodyOfHtml(bodyOfHtml, objIE, useResult)
   
-  If IS_SAVE_USE_CONTEXT_PDF = True Then
+  If IS_SAVE_USE_CONTEXT_PDF = True AND isExistCheck = True Then
     objIE.Document.forms(0).submit
     
     funcDummy = WaitIEObject(objIE, SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI)
@@ -530,7 +531,58 @@ End Function
 Function CheckHightWayUse(objElement)
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CheckHightWayUse start")
   
-  ' TODO api to in, parse get from ParseBodyOfHtml()
+  Dim key
+  key = GetKeyFromBodyOfHtml(objElement)
+  
+  If IsNull(key) = True Then
+    ' invalid key
+    ' skip
+  Else
+    ' valid key
+    Dim hightWayUseInfo
+    hightWayUseInfo = GetHightWayUseInfoFromKey(key)
+    
+    ' TODO check match
+    '   hightWayUseInfo(NUMBER_OF_FIRST_GATE_AT_SUMMARY) = gateParts(0)
+    '   hightWayUseInfo(NUMBER_OF_SECOND_GATE_AT_SUMMARY) = gateParts(1)
+    '   hightWayUseInfo(NUMBER_OF_TOLL_AT_SUMMARY) = categoryParts(NUMBER_OF_TOLL_AT_KEY)
+    '   hightWayUseInfo(NUMBER_OF_DATE_AT_SUMMARY) = dateTimeParts(0)
+    '   hightWayUseInfo(NUMBER_OF_TIME_AT_SUMMARY) = dateTimeParts(1)
+    Dim regex
+    'regex = "è¿ìcè„"
+    'regex = "è¿ìcâ∫"
+    regex = "è¿ìc"
+    Dim matched
+    matched = IsMatchRegex(hightWayUseInfo(NUMBER_OF_FIRST_GATE_AT_SUMMARY), regex, true)
+    matched = True ' TODO
+    
+    If matched = True Then
+      ' match
+      Dim version
+      version = GetIEVersion(objElement)
+      
+      If version = NUMBER_OF_IE10_VERSION Then
+        funcDummy = objElement.SetAttribute(NAME_OF_CHECKED, NAME_OF_CHECKED_VALUE)
+      ElseIf version = NUMBER_OF_IE8_VERSION Then
+        objElement.Click()
+      End If
+    Else
+      ' not match
+    End If
+  End If
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CheckHightWayUse end")
+End Function
+
+'*******************************************************************************
+' GetIEVersion
+'   @param objElement [in] object element
+'   @retval version
+'*******************************************************************************
+Function GetIEVersion(objElement)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetIEVersion start")
+  
+  Dim version
   
   Dim targetHightWayUse
   targetHightWayUse = objElement.parentNode.parentNode.innerText
@@ -538,18 +590,17 @@ Function CheckHightWayUse(objElement)
   Dim targetHightWayUseParts
   targetHightWayUseParts = Split(targetHightWayUse, DefineCrLf)
   If UBound(targetHightWayUseParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE10 Then
-    ' Check
-    ' TODO
-    
-    funcDummy = objElement.SetAttribute(NAME_OF_CHECKED, NAME_OF_CHECKED_VALUE)
+    version = 10
   ElseIf UBound(targetHightWayUseParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE8 Then
-    ' Check
-    ' TODO
-    
-    objElement.Click()
+    version = 8
+  Else
+    ' invalid format
+    ' skip
   End If
   
-  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CheckHightWayUse end")
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetIEVersion end")
+  
+  GetIEVersion = version
 End Function
 
 '*******************************************************************************
@@ -557,10 +608,13 @@ End Function
 '   @param bodyOfHtml [in] body of html
 '   @param objIE [in] object IE
 '   @param useResult [in/out] use result
-'   @retval nothing
+'   @retval true/false true:exist check, false:not exist check
 '*******************************************************************************
 Function ParseBodyOfHtml(bodyOfHtml, objIE, useResult)
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ParseBodyOfHtml start")
+  
+  Dim isExistCheck
+  isExistCheck = False
   
   Dim objInputTags
   Set objInputTags = objIE.Document.getElementsByTagName(NAME_OF_INPUT)
@@ -575,56 +629,19 @@ Function ParseBodyOfHtml(bodyOfHtml, objIE, useResult)
       If isCheckedAttribute <> DEFINE_BRANK Then
       'If isCheckedAttribute = NAME_OF_CHECKED_VALUE Then
       'If isCheckedAttribute = true Then
-        ' TODO to api below
-        
-        ' checked
-        Dim inputBody
-        inputBody = objInputTags(indexOfInput).parentNode.parentNode.innerText
-        Dim inputBodyParts
-        inputBodyParts = Split(inputBody, DefineCrLf)
-
-        Dim dateOfHightWayUse
-        Dim timeOfHightWayUse
-        Dim firstGateOfHightWayUse
-        Dim secondGateOfHightWayUse
-        Dim tollOfHightWayUse
-        Dim tollOfHightWayUseDeleteSpaceAndYen
-        Dim tollOfHightWayUseDeleteSpace
-        Dim tollOfHightWayUseParts
         Dim key
-        If UBound(inputBodyParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE10 Then
-          ' valid format
-          logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & inputBodyParts(NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE10))
-          dateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS_FOR_IE10))
-          timeOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE10))
-          firstGateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10))
-          secondGateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10))
-          tollOfHightWayUseDeleteSpace = DeleteSpace2MoreSpace(inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE10))
-          tollOfHightWayUseDeleteSpaceAndYen = Replace(tollOfHightWayUseDeleteSpace, PRISE_PREFIX_VALUE, DEFINE_BRANK)
-          tollOfHightWayUseParts = Split(tollOfHightWayUseDeleteSpaceAndYen, DEFINE_SPACE)
-          tollOfHightWayUse = tollOfHightWayUseParts(NUMBER_OF_TOLL_PARTS_IN_TOLL)
-          logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & dateOfHightWayUse & DEFINE_SPACE & timeOfHightWayUse & DEFINE_SPACE & firstGateOfHightWayUse & DEFINE_SPACE & secondGateOfHightWayUse & DEFINE_SPACE & tollOfHightWayUse)
-          
-          key = CreateKeyFromHightWayUseInfo(dateOfHightWayUse, timeOfHightWayUse, firstGateOfHightWayUse, secondGateOfHightWayUse, tollOfHightWayUse)
-          funcDummy = useResult.Add(key, True)
-        ElseIf UBound(inputBodyParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE8 Then
-          ' valid format
-          logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & inputBodyParts(NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE8))
-          dateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS_FOR_IE8))
-          timeOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE8))
-          firstGateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8))
-          secondGateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8))
-          tollOfHightWayUseDeleteSpace = DeleteSpace2MoreSpace(inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE8))
-          tollOfHightWayUseDeleteSpaceAndYen = Replace(tollOfHightWayUseDeleteSpace, PRISE_PREFIX_VALUE, DEFINE_BRANK)
-          tollOfHightWayUseParts = Split(tollOfHightWayUseDeleteSpaceAndYen, DEFINE_SPACE)
-          tollOfHightWayUse = tollOfHightWayUseParts(NUMBER_OF_TOLL_PARTS_IN_TOLL)
-          logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & dateOfHightWayUse & DEFINE_SPACE & timeOfHightWayUse & DEFINE_SPACE & firstGateOfHightWayUse & DEFINE_SPACE & secondGateOfHightWayUse & DEFINE_SPACE & tollOfHightWayUse)
-          
-          key = CreateKeyFromHightWayUseInfo(dateOfHightWayUse, timeOfHightWayUse, firstGateOfHightWayUse, secondGateOfHightWayUse, tollOfHightWayUse)
-          funcDummy = useResult.Add(key, True)
-        Else
-          ' invalid format
+        key = GetKeyFromBodyOfHtml(objInputTags(indexOfInput))
+        
+        If IsNull(key) = True Then
+          ' invalid key
           ' skip
+        Else
+          ' valid key
+          funcDummy = useResult.Add(key, True)
+          
+          If isExistCheck = False Then
+            isExistCheck = True
+          End If
         End If
       Else
         ' didn't check
@@ -638,7 +655,69 @@ Function ParseBodyOfHtml(bodyOfHtml, objIE, useResult)
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ParseBodyOfHtml end")
   
-  'ParseBodyOfHtml = 
+  ParseBodyOfHtml = isExistCheck
+End Function
+
+'*******************************************************************************
+' GetKeyFromBodyOfHtml
+'   @param objElement [in] object element
+'   @retval key
+'*******************************************************************************
+Function GetKeyFromBodyOfHtml(objElement)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetKeyFromBodyOfHtml start")
+  
+  Dim key
+  
+  ' checked
+  Dim inputBody
+  inputBody = objElement.parentNode.parentNode.innerText
+  Dim inputBodyParts
+  inputBodyParts = Split(inputBody, DefineCrLf)
+  
+  Dim dateOfHightWayUse
+  Dim timeOfHightWayUse
+  Dim firstGateOfHightWayUse
+  Dim secondGateOfHightWayUse
+  Dim tollOfHightWayUse
+  Dim tollOfHightWayUseDeleteSpaceAndYen
+  Dim tollOfHightWayUseDeleteSpace
+  Dim tollOfHightWayUseParts
+  If UBound(inputBodyParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE10 Then
+    ' valid format
+    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & inputBodyParts(NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE10))
+    dateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS_FOR_IE10))
+    timeOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE10))
+    firstGateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10))
+    secondGateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10))
+    tollOfHightWayUseDeleteSpace = DeleteSpace2MoreSpace(inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE10))
+    tollOfHightWayUseDeleteSpaceAndYen = Replace(tollOfHightWayUseDeleteSpace, PRISE_PREFIX_VALUE, DEFINE_BRANK)
+    tollOfHightWayUseParts = Split(tollOfHightWayUseDeleteSpaceAndYen, DEFINE_SPACE)
+    tollOfHightWayUse = tollOfHightWayUseParts(NUMBER_OF_TOLL_PARTS_IN_TOLL)
+    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & dateOfHightWayUse & DEFINE_SPACE & timeOfHightWayUse & DEFINE_SPACE & firstGateOfHightWayUse & DEFINE_SPACE & secondGateOfHightWayUse & DEFINE_SPACE & tollOfHightWayUse)
+    
+    key = CreateKeyFromHightWayUseInfo(dateOfHightWayUse, timeOfHightWayUse, firstGateOfHightWayUse, secondGateOfHightWayUse, tollOfHightWayUse)
+  ElseIf UBound(inputBodyParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE8 Then
+    ' valid format
+    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & inputBodyParts(NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE8))
+    dateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS_FOR_IE8))
+    timeOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE8))
+    firstGateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8))
+    secondGateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8))
+    tollOfHightWayUseDeleteSpace = DeleteSpace2MoreSpace(inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE8))
+    tollOfHightWayUseDeleteSpaceAndYen = Replace(tollOfHightWayUseDeleteSpace, PRISE_PREFIX_VALUE, DEFINE_BRANK)
+    tollOfHightWayUseParts = Split(tollOfHightWayUseDeleteSpaceAndYen, DEFINE_SPACE)
+    tollOfHightWayUse = tollOfHightWayUseParts(NUMBER_OF_TOLL_PARTS_IN_TOLL)
+    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & dateOfHightWayUse & DEFINE_SPACE & timeOfHightWayUse & DEFINE_SPACE & firstGateOfHightWayUse & DEFINE_SPACE & secondGateOfHightWayUse & DEFINE_SPACE & tollOfHightWayUse)
+    
+    key = CreateKeyFromHightWayUseInfo(dateOfHightWayUse, timeOfHightWayUse, firstGateOfHightWayUse, secondGateOfHightWayUse, tollOfHightWayUse)
+  Else
+    ' invalid format
+    ' skip
+  End If
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetKeyFromBodyOfHtml end")
+  
+  GetKeyFromBodyOfHtml = key
 End Function
 
 '*******************************************************************************

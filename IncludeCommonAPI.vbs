@@ -677,15 +677,70 @@ End Function
 '   @retval collection
 '*******************************************************************************
 Function MatchRegex(targetString, regexString, ignoreCase)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "MatchRegex start")
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "MatchRegex targetString: " & targetString)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "MatchRegex regexString: " & regexString)
+  
   Dim regex
   Dim matches
   Set regex = New RegExp
   regex.Pattern = regexString
   regex.IgnoreCase = ignoreCase
   regex.Global = True
-  Set matches = regex.Execute(strng)
+  Set matches = regex.Execute(targetString)
   
-  MatchRegex = matches
+  For Each Match in Matches
+    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "MatchRegex Match.FirstIndex: " & Match.FirstIndex)
+    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "MatchRegex Match.Value: " & Match.Value)
+  Next
+  
+  Set regex = Nothing
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "MatchRegex end")
+  
+  Set MatchRegex = matches
+End Function
+
+'*******************************************************************************
+' IsMatchRegex
+'   @param targetString [in] target string
+'   @param regexString [in] regex string
+'   @param ignoreCase [in] ignore case(true/false)
+'   @retval true/false true:matched false:not matched
+'*******************************************************************************
+Function IsMatchRegex(targetString, regexString, ignoreCase)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "IsMatchRegex start")
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "IsMatchRegex targetString: " & targetString)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "IsMatchRegex regexString: " & regexString)
+  
+  Dim regex
+  Dim matches
+  Set regex = New RegExp
+  regex.Pattern = regexString
+  regex.IgnoreCase = ignoreCase
+  regex.Global = True
+  Set matches = regex.Execute(targetString)
+  
+  For Each Match in Matches
+    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "IsMatchRegex Match.FirstIndex: " & Match.FirstIndex)
+    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "IsMatchRegex Match.Value: " & Match.Value)
+  Next
+  
+  Dim isMatched
+  If matches.Count = 0 Then
+    isMatched = False
+  Else
+    isMatched = True
+  End If
+  
+  Set matches = Nothing
+  Set regex = Nothing
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "IsMatchRegex end")
+  
+  IsMatchRegex = isMatched
 End Function
 
 

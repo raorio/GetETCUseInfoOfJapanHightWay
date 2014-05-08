@@ -185,6 +185,12 @@ Const NAME_OF_ATTRIBUTE_HREF = "href"
 ' name of link page
 Const NAME_OF_LINK_PAGE = "&page="
 
+' number of IE 10 version
+Const NUMBER_OF_IE10_VERSION = 10
+
+' number of IE 8 version
+Const NUMBER_OF_IE8_VERSION = 8
+
 ' number of hight way use parts for IE 10
 Const NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE10 = 8
 
