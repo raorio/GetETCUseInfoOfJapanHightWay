@@ -483,15 +483,7 @@ Function RequestAndParsePage(objIE, sequenceNumber, useResult)
       typeOfAttrName = objInputTags(indexOfInputTag).getAttribute(NAME_OF_ATTRIBUTE_TYPE)
       nameOfAttrName = objInputTags(indexOfInputTag).getAttribute(NAME_OF_ATTRIBUTE_NAME)
       If typeOfAttrName = NAME_OF_CHECK_BOX Then
-        If IsCheckHightWayUse(objInputTags(indexOfInputTag)) = True Then
-          ' target hight way
-          ' if check by Click(), don't detect checked. there for check by SetAttribute
-          'objInputTags(indexOfInputTag).Click()
-          funcDummy = objInputTags(indexOfInputTag).SetAttribute(NAME_OF_CHECKED, NAME_OF_CHECKED_VALUE)
-        Else
-          ' not target hight way
-          ' skip
-        End If
+        CheckHightWayUse(objInputTags(indexOfInputTag))
       End If
     Next
   End If
@@ -531,15 +523,14 @@ Function RequestAndParsePage(objIE, sequenceNumber, useResult)
 End Function
 
 '*******************************************************************************
-' IsTargetHightWayUse
+' CheckHightWayUse
 '   @param objElement [in] object element
-'   @retval true/false true:target, false:not target
+'   @retval nothing
 '*******************************************************************************
-Function IsCheckHightWayUse(objElement)
-  Dim result
-  result = False
+Function CheckHightWayUse(objElement)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CheckHightWayUse start")
   
-  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "IsCheckHightWayUse start")
+  ' TODO api to in, parse get from ParseBodyOfHtml()
   
   Dim targetHightWayUse
   targetHightWayUse = objElement.parentNode.parentNode.innerText
@@ -550,17 +541,15 @@ Function IsCheckHightWayUse(objElement)
     ' Check
     ' TODO
     
-    result = True
+    funcDummy = objElement.SetAttribute(NAME_OF_CHECKED, NAME_OF_CHECKED_VALUE)
   ElseIf UBound(targetHightWayUseParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE8 Then
     ' Check
     ' TODO
     
-    result = True
+    objElement.Click()
   End If
   
-  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "IsCheckHightWayUse end")
-  
-  IsCheckHightWayUse = result
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CheckHightWayUse end")
 End Function
 
 '*******************************************************************************
@@ -586,6 +575,8 @@ Function ParseBodyOfHtml(bodyOfHtml, objIE, useResult)
       If isCheckedAttribute <> DEFINE_BRANK Then
       'If isCheckedAttribute = NAME_OF_CHECKED_VALUE Then
       'If isCheckedAttribute = true Then
+        ' TODO to api below
+        
         ' checked
         Dim inputBody
         inputBody = objInputTags(indexOfInput).parentNode.parentNode.innerText
