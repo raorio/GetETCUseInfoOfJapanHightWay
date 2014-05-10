@@ -58,41 +58,53 @@ DAY_OF_USE_TO = "20"
 '-------------------
 ' hight way
 '-------------------
-' in name's of use target gate
+' name's of use target gate
 '   delimiter is ,
-'   support * waild card, which is all(only *, don't support è¿ìc* and *çLìá)
-'   ex: IN_NAMES_OF_USE_TARGET_GATE = "è¿ìc,çLìá"
-Const IN_NAMES_OF_USE_TARGET_GATE = "*"
+'   support regex(http://msdn.microsoft.com/ja-jp/library/ms974570.aspx)
+'   ex: NAMES_OF_USE_TARGET_GATE = "è¿ìc,çLìá"
+Const NAMES_OF_USE_TARGET_GATE = "è¿ìcè„ÇË,è¿ìcâ∫ÇË"
 
-' out name's of use target gate
+' first name of use target gate
 '   delimiter is ,
-'   support * waild card, which is all(only *, don't support è¿ìc* and *çLìá)
-'   ex: OUT_NAMES_OF_USE_TARGET_GATE = "è¿ìc,çLìá"
-Const OUT_NAMES_OF_USE_TARGET_GATE = "*"
+'   support regex(http://msdn.microsoft.com/ja-jp/library/ms974570.aspx)
+'   ex: FIRST_NAME_OF_USE_TARGET_GATE = "è¿ìc,çLìá"
+Const FIRST_NAME_OF_USE_TARGET_GATE = "è¿ìcè„ÇË,è¿ìcâ∫ÇË"
 
-' prise's of use target
+' second name of use target gate
 '   delimiter is ,
-'   support * waild card, which is all(only *, don't support 410* and *410)
-'   ex: PRISES_OF_USE_TARGET = "410,370"
-Const PRISES_OF_USE_TARGET = "*"
+'   support regex(http://msdn.microsoft.com/ja-jp/library/ms974570.aspx)
+'   ex: SECOND_NAME_OF_USE_TARGET_GATE = "è¿ìc,çLìá"
+Const SECOND_NAME_OF_USE_TARGET_GATE = "è¿ìcè„ÇË,è¿ìcâ∫ÇË"
 
-' in name's of exclude gate
+' toll of use target
 '   delimiter is ,
-'   support * waild card, which is all(only *, don't support éuòa* and *êºïóêVìs)
-'   ex: IN_NAMES_OF_EXCLUDE_GATE = "éuòa,êºïóêVìs"
-Const IN_NAMES_OF_EXCLUDE_GATE = ""
+'   support regex(http://msdn.microsoft.com/ja-jp/library/ms974570.aspx)
+'   ex: TOLL_OF_USE_TARGET = "410,370"
+Const TOLL_OF_USE_TARGET = "410,370"
 
-' out name's of exclude gate
+' name's of exclude gate
 '   delimiter is ,
-'   support * waild card, which is all(only *, don't support éuòa* and *êºïóêVìs)
-'   ex: OUT_NAMES_OF_EXCLUDE_GATE = "éuòa,êºïóêVìs"
-Const OUT_NAMES_OF_EXCLUDE_GATE = ""
+'   support regex(http://msdn.microsoft.com/ja-jp/library/ms974570.aspx)
+'   ex: NAMES_OF_USE_EXCLUDE_GATE = "éuòa-êºïóêVìs,éuòa-çLìá,êºïóêVìs-çLìá"
+Const NAMES_OF_USE_EXCLUDE_GATE = ""
 
-' prise's of exclude
+' first name of exclude gate
 '   delimiter is ,
-'   support * waild card, which is all(only *, don't support 820* and *640)
-'   ex: PRISES_OF_EXCLUDE = "820,640"
-Const PRISES_OF_EXCLUDE = ""
+'   support regex(http://msdn.microsoft.com/ja-jp/library/ms974570.aspx)
+'   ex: FIRST_NAME_OF_EXCLUDE_GATE = "éuòa,êºïóêVìs,çLìá"
+Const FIRST_NAME_OF_EXCLUDE_GATE = ""
+
+' second name of exclude gate
+'   delimiter is ,
+'   support regex(http://msdn.microsoft.com/ja-jp/library/ms974570.aspx)
+'   ex: SECOND_NAME_OF_EXCLUDE_GATE = "éuòa,êºïóêVìs,çLìá"
+Const SECOND_NAME_OF_EXCLUDE_GATE = ""
+
+' toll of exclude
+'   delimiter is ,
+'   support regex(http://msdn.microsoft.com/ja-jp/library/ms974570.aspx)
+'   ex: TOLL_OF_EXCLUDE = "820,640"
+Const TOLL_OF_EXCLUDE = ""
 
 '-------------------
 ' user info
@@ -103,8 +115,11 @@ Const INDEX_OF_CAR_NUMBER = 0
 ' index of ic card number
 Const INDEX_OF_ID_CARD_NUMBER = 1
 
+' index of other info
+Const INDEX_OF_OTHER_INFO = 2
+
 ' size of user info index
-Const SIZE_OF_USER_INFO_INDEX = 2
+Const SIZE_OF_USER_INFO_INDEX = 3
 
 '---------------------------------------
 ' input parameter
@@ -125,8 +140,7 @@ Const SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI = 500
 Const IS_SHOW_MAIN_WEB_GUI = true
 
 ' is conform before hight way use determ
-'Const IS_CONFORM_BEFORE_HIGHT_WAY_USE_DETERM = true
-Const IS_CONFORM_BEFORE_HIGHT_WAY_USE_DETERM = false
+Const IS_CONFORM_BEFORE_HIGHT_WAY_USE_DETERM = true
 
 '---------------------------------------
 ' etc site parameter

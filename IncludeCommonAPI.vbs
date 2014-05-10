@@ -679,8 +679,8 @@ End Function
 Function MatchRegex(targetString, regexString, ignoreCase)
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "MatchRegex start")
   
-  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "MatchRegex targetString: " & targetString)
-  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "MatchRegex regexString: " & regexString)
+  logReturnValueDummy = LogOutDetailDebug(LOG_TARGET_LEVEL, "MatchRegex targetString: " & targetString)
+  logReturnValueDummy = LogOutDetailDebug(LOG_TARGET_LEVEL, "MatchRegex regexString: " & regexString)
   
   Dim regex
   Dim matches
@@ -691,8 +691,8 @@ Function MatchRegex(targetString, regexString, ignoreCase)
   Set matches = regex.Execute(targetString)
   
   For Each Match in Matches
-    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "MatchRegex Match.FirstIndex: " & Match.FirstIndex)
-    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "MatchRegex Match.Value: " & Match.Value)
+    logReturnValueDummy = LogOutDetailDebug(LOG_TARGET_LEVEL, "MatchRegex Match.FirstIndex: " & Match.FirstIndex)
+    logReturnValueDummy = LogOutDetailDebug(LOG_TARGET_LEVEL, "MatchRegex Match.Value: " & Match.Value)
   Next
   
   Set regex = Nothing
@@ -741,6 +741,31 @@ Function IsMatchRegex(targetString, regexString, ignoreCase)
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "IsMatchRegex end")
   
   IsMatchRegex = isMatched
+End Function
+
+'*******************************************************************************
+' IsMatchRegexArray
+'   @param targetString [in] target string
+'   @param regexStringArray [in] regex string array
+'   @param ignoreCase [in] ignore case(true/false)
+'   @retval true/false true:matched false:not matched
+'*******************************************************************************
+Function IsMatchRegexArray(targetString, regexStringArray, ignoreCase)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "IsMatchRegexArray start")
+  
+  Dim resultIsMatched
+  resultIsMatched = False
+  For Each regexString in regexStringArray
+    Dim isMatched
+    isMatched = IsMatchRegex(targetString, regexString, ignoreCase)
+    If resultIsMatched = False And isMatched = True Then
+      resultIsMatched = True
+    End If
+  Next
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "IsMatchRegexArray end")
+  
+  IsMatchRegexArray = resultIsMatched
 End Function
 
 

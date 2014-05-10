@@ -38,20 +38,24 @@ Function GetETCUseInfoOfJapanHightWay()
   Dim periodParams
   Set periodParams = GetTargetPeriod(MODE_OF_AUTO_CALC_DATE)
   
-  Dim targetCurrentYear
-  Dim targetCurrentMonth
-  Dim targetCurrentDay
-  targetCurrentYear = periodParams.Item(NAME_OF_USE_TO_YEAR)
-  targetCurrentMonth = periodParams.Item(NAME_OF_USE_TO_MONTH)
-  targetCurrentDay = periodParams.Item(NAME_OF_USE_TO_DAY)
+  Dim targetToYear
+  Dim targetToMonth
+  Dim targetToDay
+  Dim targetFromYear
+  Dim targetFromMonth
+  Dim targetFromDay
+  targetToYear = periodParams.Item(NAME_OF_USE_TO_YEAR)
+  targetToMonth = periodParams.Item(NAME_OF_USE_TO_MONTH)
+  targetToDay = periodParams.Item(NAME_OF_USE_TO_DAY)
+  targetFromYear = periodParams.Item(NAME_OF_USE_FROM_YEAR)
+  targetFromMonth = periodParams.Item(NAME_OF_USE_FROM_MONTH)
+  targetFromDay = periodParams.Item(NAME_OF_USE_FROM_DAY)
   
   ' get script file path
-  Dim strSaveFilePath
   Dim strScriptPath
+  Dim strPeriodDate
   strScriptPath = Replace(WScript.ScriptFullName, WScript.ScriptName, "")
-  strSaveFilePath = strScriptPath & targetCurrentYear & targetCurrentMonth & targetCurrentDay
-  CreateFolder(strSaveFilePath)
-  CreateFile(strSaveFilePath & FILE_NAME_OF_SAVE_SUM_FILE)
+  strPeriodDate = targetFromYear & targetFromMonth & targetFromDay & DEFINE_HYPHEN & targetToYear & targetToMonth & targetToDay
   
   Dim mainIEObj
   mainIEObj = CreateIEObject(isDispExecIE, URL_OF_ETC_SITE, webSleepTime)
@@ -73,9 +77,11 @@ Function GetETCUseInfoOfJapanHightWay()
     Else
       Dim carNumber
       Dim icCardNumber
+      Dim otherInfo
       
       carNumber = userInfo(INDEX_OF_CAR_NUMBER)
       icCardNumber = userInfo(INDEX_OF_ID_CARD_NUMBER)
+      otherInfo = userInfo(INDEX_OF_OTHER_INFO)
       
       Set mainIEObj = CreateIEObject(IS_SHOW_MAIN_WEB_GUI, URL_OF_ETC_SITE, SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI)
       funcDummy = SetFormToIE(mainIEObj, periodParams, carNumber, icCardNumber)
@@ -151,12 +157,16 @@ Function GetETCUseInfoOfJapanHightWay()
         logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "summary value: " & summaryResult.Item(key))
       Next
       
+      Dim strSaveFilePath
+      strSaveFilePath = strScriptPath & strPeriodDate
+      CreateFolder(strSaveFilePath)
+      CreateFile(strSaveFilePath & DEFINE_DELIM_FOLDER & FILE_NAME_OF_SAVE_SUM_FILE)
+      
       funcDummy = SaveSummaryInExcel(strScriptPath & FILE_NAME_OF_EXCEL, summaryResult)
       
       Set mainIEObj = Nothing
     End If
   Next
-  
   
   
   ' TODO
@@ -225,7 +235,6 @@ Function ReadUserInfoFile(filePath)
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ReadUserInfoFile end")
   
   ReadUserInfoFile = userInfos
-  'ReadUserInfoFile = resultUserInfos
 End Function
 
 '*******************************************************************************
@@ -524,6 +533,123 @@ Function RequestAndParsePage(objIE, sequenceNumber, useResult)
 End Function
 
 '*******************************************************************************
+' CheckMatching
+'   @param targetString [in] target string
+'   @param regexStringOfConfig [in] regex string of config
+'   @retval true/false true:match false:not match
+'*******************************************************************************
+Function CheckMatching(targetString, regexStringOfConfig)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CheckMatching start")
+  
+  Dim isMatch
+  isMatch = False
+  If Len(targetString) <> 0 And Len(regexStringOfConfig) <> 0 Then
+    Dim regexArray
+    regexArray = GetRegexArray(regexStringOfConfig)
+    isMatch = IsMatchRegexArray(targetString, regexArray, true)
+  End If
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CheckMatching end")
+  
+  CheckMatching = isMatch
+End Function
+
+'*******************************************************************************
+' CheckMatchingAll
+'   @param hightWayUseInfo [in] hight way use info
+'   @retval true/false true:match false:not match
+'*******************************************************************************
+Function CheckMatchingAll(hightWayUseInfo)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CheckMatchingAll start")
+  
+  ' TODO check match
+  '   hightWayUseInfo(NUMBER_OF_DATE_AT_SUMMARY)
+  '   hightWayUseInfo(NUMBER_OF_TIME_AT_SUMMARY)
+  
+  ' gate's
+  Dim isMatchOfGates
+  Dim isMatchOfGatesReverse
+  isMatchOfGates = False
+  isMatchOfGatesReverse = False
+  If Len(NAMES_OF_USE_TARGET_GATE) <> 0 Then
+    isMatchOfGates = CheckMatching(hightWayUseInfo(NUMBER_OF_FIRST_GATE_AT_SUMMARY) & DEFINE_HYPHEN & hightWayUseInfo(NUMBER_OF_SECOND_GATE_AT_SUMMARY), NAMES_OF_USE_TARGET_GATE)
+    isMatchOfGatesReverse = CheckMatching(hightWayUseInfo(NUMBER_OF_SECOND_GATE_AT_SUMMARY) & DEFINE_HYPHEN & hightWayUseInfo(NUMBER_OF_FIRST_GATE_AT_SUMMARY), NAMES_OF_USE_TARGET_GATE)
+  End If
+  
+  ' first gate
+  Dim isMatchOfFirstGate
+  isMatchOfFirstGate = False
+  If Len(FIRST_NAME_OF_USE_TARGET_GATE) <> 0 Then
+    isMatchOfFirstGate = CheckMatching(hightWayUseInfo(NUMBER_OF_FIRST_GATE_AT_SUMMARY), FIRST_NAME_OF_USE_TARGET_GATE)
+  End If
+  
+  ' second gate
+  Dim isMatchOfSecondGate
+  isMatchOfSecondGate = False
+  If Len(SECOND_NAME_OF_USE_TARGET_GATE) <> 0 Then
+    isMatchOfSecondGate = CheckMatching(hightWayUseInfo(NUMBER_OF_SECOND_GATE_AT_SUMMARY), SECOND_NAME_OF_USE_TARGET_GATE)
+  End If
+  
+  ' toll
+  Dim isMatchOfTollGate
+  isMatchOfTollGate = False
+  If Len(TOLL_OF_USE_TARGET) <> 0 Then
+    isMatchOfTollGate = CheckMatching(hightWayUseInfo(NUMBER_OF_TOLL_AT_SUMMARY), TOLL_OF_USE_TARGET)
+  End If
+  
+  ' gate's exclude
+  Dim isMatchOfGatesExclude
+  Dim isMatchOfGatesReverseExclude
+  isMatchOfGatesExclude = False
+  isMatchOfGatesReverseExclude = False
+  If Len(NAMES_OF_USE_EXCLUDE_GATE) <> 0 Then
+    isMatchOfGatesExclude = CheckMatching(hightWayUseInfo(NUMBER_OF_FIRST_GATE_AT_SUMMARY) & DEFINE_HYPHEN & hightWayUseInfo(NUMBER_OF_SECOND_GATE_AT_SUMMARY), NAMES_OF_USE_EXCLUDE_GATE)
+    isMatchOfGatesReverseExclude = CheckMatching(hightWayUseInfo(NUMBER_OF_SECOND_GATE_AT_SUMMARY) & DEFINE_HYPHEN & hightWayUseInfo(NUMBER_OF_FIRST_GATE_AT_SUMMARY), NAMES_OF_USE_EXCLUDE_GATE)
+  End If
+  
+  ' first gate exclude exclude
+  Dim isMatchOfFirstGateExclude
+  isMatchOfFirstGateExclude = False
+  If Len(FIRST_NAME_OF_EXCLUDE_GATE) <> 0 Then
+    isMatchOfFirstGateExclude = CheckMatching(hightWayUseInfo(NUMBER_OF_FIRST_GATE_AT_SUMMARY), FIRST_NAME_OF_EXCLUDE_GATE)
+  End If
+  
+  ' second gate exclude exclude
+  Dim isMatchOfSecondGateExclude
+  isMatchOfSecondGateExclude = False
+  If Len(SECOND_NAME_OF_EXCLUDE_GATE) <> 0 Then
+    isMatchOfSecondGateExclude = CheckMatching(hightWayUseInfo(NUMBER_OF_SECOND_GATE_AT_SUMMARY), SECOND_NAME_OF_EXCLUDE_GATE)
+  End If
+  
+  ' toll exclude exclude
+  Dim isMatchOfTollGateExclude
+  isMatchOfTollGateExclude = False
+  If Len(TOLL_OF_EXCLUDE) <> 0 Then
+    isMatchOfTollGateExclude = CheckMatching(hightWayUseInfo(NUMBER_OF_TOLL_AT_SUMMARY), TOLL_OF_EXCLUDE)
+  End If
+  
+  Dim isMatch
+  If isMatchOfGates = True Or isMatchOfGatesReverse = True Or isMatchOfFirstGate = True Or isMatchOfSecondGate = True Or isMatchOfTollGate = True Then
+    isMatch = True
+  Else
+    isMatch = False
+  End If
+  Dim isMatchExclude
+  If isMatchOfGatesExclude = True Or isMatchOfGatesReverseExclude = True Or isMatchOfFirstGateExclude = True Or isMatchOfSecondGateExclude = True Or isMatchOfTollGateExclude = True Then
+    isMatchExclude = True
+  Else
+    isMatchExclude = False
+  End If
+  If isMatch = True And isMatchExclude = True Then
+    isMatch = False
+  End If
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CheckMatchingAll end")
+  
+  CheckMatchingAll = isMatch
+End Function
+
+'*******************************************************************************
 ' CheckHightWayUse
 '   @param objElement [in] object element
 '   @retval nothing
@@ -542,19 +668,8 @@ Function CheckHightWayUse(objElement)
     Dim hightWayUseInfo
     hightWayUseInfo = GetHightWayUseInfoFromKey(key)
     
-    ' TODO check match
-    '   hightWayUseInfo(NUMBER_OF_FIRST_GATE_AT_SUMMARY) = gateParts(0)
-    '   hightWayUseInfo(NUMBER_OF_SECOND_GATE_AT_SUMMARY) = gateParts(1)
-    '   hightWayUseInfo(NUMBER_OF_TOLL_AT_SUMMARY) = categoryParts(NUMBER_OF_TOLL_AT_KEY)
-    '   hightWayUseInfo(NUMBER_OF_DATE_AT_SUMMARY) = dateTimeParts(0)
-    '   hightWayUseInfo(NUMBER_OF_TIME_AT_SUMMARY) = dateTimeParts(1)
-    Dim regex
-    'regex = "è¿ìcè„"
-    'regex = "è¿ìcâ∫"
-    regex = "è¿ìc"
     Dim matched
-    matched = IsMatchRegex(hightWayUseInfo(NUMBER_OF_FIRST_GATE_AT_SUMMARY), regex, true)
-    matched = True ' TODO
+    matched = CheckMatchingAll(hightWayUseInfo)
     
     If matched = True Then
       ' match
@@ -900,5 +1015,21 @@ Function SaveSummaryInExcel(filePath, summaryResult)
   funcDummy = SaveOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK)
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SaveSummaryInExcel end")
+End Function
+
+'*******************************************************************************
+' GetRegexArray
+'   @param regexStringOfConfig [in] regex config
+'   @retval regex array
+'*******************************************************************************
+Function GetRegexArray(regexStringOfConfig)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetRegexArray start")
+  
+  Dim regexArray
+  regexArray = Split(regexStringOfConfig, DEFINE_DELIM_CANMA)
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CreateKeyFromAuto20DayPerAMonth end")
+  
+  GetRegexArray = regexArray
 End Function
 
