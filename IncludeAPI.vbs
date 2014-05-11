@@ -24,9 +24,19 @@ End Function
 '===============================================================================
 ' api
 '===============================================================================
-'-------------------------------------------------------------------------------
-' main api
-'-------------------------------------------------------------------------------
+'*******************************************************************************
+' InitETCUseInfoOfJapanHightWay function
+'   @param nothing
+'   @retval nothing
+'*******************************************************************************
+Function InitETCUseInfoOfJapanHightWay()
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "InitETCUseInfoOfJapanHightWay start")
+  
+  ' TODO
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "InitETCUseInfoOfJapanHightWay end")
+End Function
+
 '*******************************************************************************
 ' GetETCUseInfoOfJapanHightWay function
 '   @param nothing
@@ -150,36 +160,54 @@ Function GetETCUseInfoOfJapanHightWay()
       Set summaryResult = CreateObject(NAME_OF_SCRIPTING_DICTIONARY)
       funcDummy = CountUseInfo(useResult, summaryResult)
       
-      ' TODO
       ' print debug
       For Each key In summaryResult
         logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "summary key: " & key)
         logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "summary value: " & summaryResult.Item(key))
       Next
       
-      Dim strSaveFilePath
-      strSaveFilePath = strScriptPath & strPeriodDate
-      CreateFolder(strSaveFilePath)
-      CreateFile(strSaveFilePath & DEFINE_DELIM_FOLDER & FILE_NAME_OF_SAVE_SUM_FILE)
+      Dim strSaveFolderPath
+      strSaveFolderPath = strScriptPath & strPeriodDate & DEFINE_DELIM_FOLDER & carNumber & DEFINE_HYPHEN & Right(icCardNumber, 4) & DEFINE_HYPHEN & otherInfo
+      ExecAndWaitCommand("cmd /c mkdir " & strSaveFolderPath)
       
-      funcDummy = SaveSummaryInExcel(strScriptPath & FILE_NAME_OF_EXCEL, summaryResult)
+      If IS_SAVE_SUM_FILE = True Then
+        Dim strSaveFilePath
+        strSaveFilePath = strSaveFolderPath & DEFINE_DELIM_FOLDER & FILE_NAME_OF_SAVE_SUM_FILE
+        CreateFolder(strSaveFolderPath)
+        CreateFile(strSaveFilePath)
+        Dim objFile
+        Set objFile = OpenFileToWrite(strSaveFilePath)
+        For Each key In summaryResult
+          Dim context
+          context = key & DEFINE_EQUAL & summaryResult.Item(key)
+          funcDummy = WriteLineToObjectFile(objFile, context)
+        Next
+        CloseObjectFile(objFile)
+        Set objFile = Nothing
+      End If
+      
+      ' concat pdf
+      ' TODO
+      
+      ' move to pdf
+      ExecAndWaitCommand("cmd /c move /Y " & strScriptPath & "*.pdf " & strSaveFolderPath & DEFINE_DELIM_FOLDER)
+      
+      If IS_SAVE_EXCEL = True Then
+        Dim strSaveExcelPath
+        strSaveExcelPath = strSaveFolderPath & DEFINE_DELIM_FOLDER & FILE_NAME_OF_EXCEL
+        ExecAndWaitCommand("cmd /c copy /Y " & strScriptPath & FILE_NAME_OF_EXCEL & DEFINE_SPACE & strSaveExcelPath)
+        funcDummy = SaveSummaryInExcel(strSaveExcelPath, summaryResult)
+      End If
       
       Set mainIEObj = Nothing
     End If
   Next
   
-  
   ' TODO
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetETCUseInfoOfJapanHightWay end")
-  
-  'GetETCUseInfoOfJapanHightWay = TODO
 End Function
 
-
-'-------------------------------------------------------------------------------
-' other api
-'-------------------------------------------------------------------------------
 '*******************************************************************************
 ' ReadUserInfoFile 
 '   @param filePath [in] get mode

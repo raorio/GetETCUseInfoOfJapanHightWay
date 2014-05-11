@@ -30,7 +30,7 @@ Execute ReadVBSFile("IncludeCommonAPI.vbs")
 ' log file check
 funcDummy = logFileCheck(LOG_FOLDER, logFilePath)
 
-logReturnValueDummy = logOutInfo(LOG_TARGET_LEVEL, "start main program")
+logReturnValueDummy = logOutInfo(LOG_TARGET_LEVEL, "start init program")
 
 ' set vbs timeout
 If VBS_TIMEOUT > 0 Then
@@ -38,6 +38,6 @@ If VBS_TIMEOUT > 0 Then
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "set vbs timeout: " & VBS_TIMEOUT)
 End If
 
-funcDummy = GetETCUseInfoOfJapanHightWay()
+funcDummy = InitETCUseInfoOfJapanHightWay()
 
-logReturnValueDummy = logOutInfo(LOG_TARGET_LEVEL, "end main program")
+logReturnValueDummy = logOutInfo(LOG_TARGET_LEVEL, "end init program")

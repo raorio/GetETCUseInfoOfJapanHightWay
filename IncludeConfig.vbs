@@ -140,7 +140,7 @@ Const SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI = 500
 Const IS_SHOW_MAIN_WEB_GUI = true
 
 ' is conform before hight way use determ
-Const IS_CONFORM_BEFORE_HIGHT_WAY_USE_DETERM = true
+Const IS_CONFORM_BEFORE_HIGHT_WAY_USE_DETERM = false
 
 '---------------------------------------
 ' etc site parameter
@@ -327,6 +327,9 @@ Const DELIM_OF_DATE_AT_ETC_SITE = "/"
 '---------------------------------------
 ' excel parameter
 '---------------------------------------
+' is save excel
+Const IS_SAVE_EXCEL = true
+
 ' file name of excel
 Const FILE_NAME_OF_EXCEL = "UseSummary.xlsx"
 
@@ -368,6 +371,15 @@ Const SAVE_PREFIX_OF_USE_CONTEXT_PDF = "etc-pdf-html-file-"
 Const SAVE_SUFFIX_OF_USE_CONTEXT_PDF = ".pdf"
 
 '-------------------
+' text
+'-------------------
+' is save sum file
+Const IS_SAVE_SUM_FILE = true
+
+' file name of save sum file
+Const FILE_NAME_OF_SAVE_SUM_FILE = "sum-file.log"
+
+'-------------------
 ' debug
 '-------------------
 ' is save use context html
@@ -389,8 +401,5 @@ Const SAVE_PREFIX_OF_USE_CONTEXT_TXT = "etc-file-"
 
 ' save suffix of use context txt
 Const SAVE_SUFFIX_OF_USE_CONTEXT_TXT = ".txt"
-
-' file name of save sum file
-Const FILE_NAME_OF_SAVE_SUM_FILE = "sum-file.log"
 
 

@@ -91,6 +91,9 @@ Const NAME_OF_SHELL_APPLICATION = "Shell.Application"
 ' name of excel application
 Const NAME_OF_EXCEL_APPLICATION = "Excel.Application"
 
+' name of wscript shell
+Const NAME_OF_WSCRIPT_SHELL = "WScript.Shell"
+
 '-------------------
 ' http object
 '-------------------

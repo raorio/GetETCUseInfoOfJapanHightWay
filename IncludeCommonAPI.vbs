@@ -269,15 +269,15 @@ End Function
 '*******************************************************************************
 Function AppendFile(filePath, context)
   Dim objFileSys
-  Dim resStream
+  Dim objFile
   
   Set objFileSys = WScript.CreateObject(NAME_OF_SCRIPTING_FILESYSTEMOBJECT)
-  Set resStream = objFileSys.OpenTextFile(filePath, ForAppending)
+  Set objFile = objFileSys.OpenTextFile(filePath, ForAppending)
   
-  resStream.Write(context)
-  resStream.Close
+  objFile.Write(context)
+  objFile.Close
   
-  Set resStream = Nothing
+  Set objFile = Nothing
   Set objFileSys = Nothing
 End Function
 
@@ -294,15 +294,15 @@ Function ReadFileAllContext(filePath)
     logReturnValueDummy = LogOut(logLevelError, "file don't exist: " & filePath)
     Set ReadFileAllContext = Nothing
   Else
-    Dim resStream
+    Dim objFile
     Dim resData
     
-    Set resStream = objFileSys.OpenTextFile(filePath, ForReading)
+    Set objFile = objFileSys.OpenTextFile(filePath, ForReading)
     
-    resData = resStream.ReadAll
-    resStream.Close
+    resData = objFile.ReadAll
+    objFile.Close
     
-    Set resStream = Nothing
+    Set objFile = Nothing
     Set objFileSys = Nothing
     
     ReadFileAllContext = resData
@@ -332,15 +332,16 @@ End Function
 '*******************************************************************************
 Function OpenFileToRead(filePath)
   Dim objFileSys
+  Dim objFile
   
   Set objFileSys = WScript.CreateObject(NAME_OF_SCRIPTING_FILESYSTEMOBJECT)
   If objFileSys.FileExists(filePath) = false Then
     logReturnValueDummy = LogOut(logLevelError, "file don't exist: " & filePath)
     Set OpenFileToRead = Nothing
   Else
-    Set objFileSys = objFileSys.OpenTextFile(filePath, ForReading)
+    Set objFile = objFileSys.OpenTextFile(filePath, ForReading)
     
-    Set OpenFileToRead = objFileSys
+    Set OpenFileToRead = objFile
   End If
 End Function
 
@@ -351,9 +352,13 @@ End Function
 '*******************************************************************************
 Function OpenFileToWrite(filePath)
   Dim objFileSys
+  Dim objFile
   
   Set objFileSys = WScript.CreateObject(NAME_OF_SCRIPTING_FILESYSTEMOBJECT)
-  Set resStream = objFileSys.OpenTextFile(filePath, ForWriting)
+  Set objFile = objFileSys.OpenTextFile(filePath, ForWriting)
+  
+  Set OpenFileToWrite = objFile
+  Set objFileSys = Nothing
 End Function
 
 '*******************************************************************************
@@ -363,48 +368,59 @@ End Function
 '*******************************************************************************
 Function OpenFileToAppend(filePath)
   Dim objFileSys
+  Dim objFile
   
   Set objFileSys = WScript.CreateObject(NAME_OF_SCRIPTING_FILESYSTEMOBJECT)
   If objFileSys.FileExists(filePath) = false Then
     logReturnValueDummy = LogOut(logLevelError, "file don't exist: " & filePath)
     Set OpenFileToAppend = Nothing
   Else
-    Set objFileSys = objFileSys.OpenTextFile(filePath, ForAppending)
+    Set objFile = objFileSys.OpenTextFile(filePath, ForAppending)
     
-    Set OpenFileToAppend = objFileSys
+    Set OpenFileToAppend = objFile
   End If
 End Function
 
 '*******************************************************************************
 ' WriteToObjectFile
-'   @param objFileSys [in] object file system
+'   @param objFile [in] object file
 '   @param context [in] context
 '   @retval nothing
 '*******************************************************************************
-Function WriteToObjectFile(objFileSys, context)
-  objFileSys.Write(context)
+Function WriteToObjectFile(objFile, context)
+  objFile.Write(context)
+End Function
+
+'*******************************************************************************
+' WriteLineToObjectFile
+'   @param objFile [in] object file
+'   @param context [in] context
+'   @retval nothing
+'*******************************************************************************
+Function WriteLineToObjectFile(objFile, context)
+  objFile.Write(context & DefineCrLf)
 End Function
 
 '*******************************************************************************
 ' ReadFromObjectFile
-'   @param objFileSys [in] object file system
+'   @param objFile [in] object file
 '   @retval line context
 '*******************************************************************************
-Function ReadFromObjectFile(objFileSys)
+Function ReadFromObjectFile(objFile)
   Dim lineContext
   
-  lineContext = objFileSys.ReadLine()
+  lineContext = objFile.ReadLine()
   
   ReadFromObjectFile = lineContext
 End Function
 
 '*******************************************************************************
 ' CloseObjectFile
-'   @param objFileSys [in] object file system
+'   @param objFile [in] object file
 '   @retval nothing
 '*******************************************************************************
-Function CloseObjectFile(objFileSys)
-  objFileSys.Close()
+Function CloseObjectFile(objFile)
+  objFile.Close()
 End Function
 
 '*******************************************************************************
@@ -770,12 +786,6 @@ End Function
 
 
 '-------------------------------------------------------------------------------
-' file api
-'-------------------------------------------------------------------------------
-'TODO
-
-
-'-------------------------------------------------------------------------------
 ' web api
 '-------------------------------------------------------------------------------
 '*******************************************************************************
@@ -944,3 +954,84 @@ Function SaveOfExcel(objExcel, numberOfWorkBook)
   objExcel.Workbooks(numberOfWorkBook).Save()
 End Function
 
+'-------------------------------------------------------------------------------
+' command api
+'-------------------------------------------------------------------------------
+'*******************************************************************************
+' ExecCommand
+'   @param command [in] command
+'   @retval nothing
+'*******************************************************************************
+Function ExecCommand(command)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ExecCommand start")
+  
+  Dim WshShell
+  Set WshShell = WScript.CreateObject(NAME_OF_WSCRIPT_SHELL)
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ExecCommand command start: " & command)
+  
+  WshShell.Exec(command)
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ExecCommand command end: " & command)
+  
+  Set WshShell = Nothing
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ExecCommand end")
+End Function
+
+'*******************************************************************************
+' ExecAndGetReturnCommand
+'   @param command [in] command
+'   @retval nothing
+'*******************************************************************************
+Function ExecAndGetReturnCommand(command)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ExecAndGetReturnCommand start")
+  
+  Dim WshShell
+  Dim outExec
+  Dim outStream
+  Dim strOut
+  Set WshShell = WScript.CreateObject(NAME_OF_WSCRIPT_SHELL)
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ExecAndGetReturnCommand command start: " & command)
+  
+  Set outExec = WshShell.Exec(command)
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ExecAndGetReturnCommand command end: " & command)
+  
+  Set outStream = outExec.StdOut
+  strOut = ""
+  Do While Not outStream.AtEndOfStream
+    strOut = strOut & vbNewLine & outStream.ReadLine()
+  Loop
+  Set WshShell = Nothing
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ExecAndGetReturnCommand end")
+  
+  ExecAndGetReturnCommand = strOut
+End Function
+
+'*******************************************************************************
+' ExecAndWaitCommand
+'   @param command [in] command
+'   @retval nothing
+'*******************************************************************************
+Function ExecAndWaitCommand(command)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ExecAndWaitCommand start")
+  
+  Dim WshShell
+  Dim result
+  Set WshShell = WScript.CreateObject(NAME_OF_WSCRIPT_SHELL)
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ExecAndWaitCommand command start: " & command)
+  
+  result = WshShell.Run(command, 1, true)
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ExecAndWaitCommand command end: " & command)
+  
+  Set WshShell = Nothing
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "ExecAndWaitCommand end")
+  
+  ExecAndWaitCommand = result
+End Function
