@@ -954,6 +954,22 @@ Function SaveOfExcel(objExcel, numberOfWorkBook)
   objExcel.Workbooks(numberOfWorkBook).Save()
 End Function
 
+'---------------------------------------
+' dictionary object api
+'---------------------------------------
+'*******************************************************************************
+' LogoutDictionaryObject
+'   @param objDictionary [in] object dictionary
+'   @param logoutPrefix [in] logout prefix
+'   @retval nothing
+'*******************************************************************************
+Function LogoutDictionaryObject(objDictionary, logoutPrefix)
+  For Each key In objDictionary
+    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, logoutPrefix & " key: " & key)
+    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, logoutPrefix & " value: " & objDictionary.Item(key))
+  Next
+End Function
+
 '-------------------------------------------------------------------------------
 ' command api
 '-------------------------------------------------------------------------------

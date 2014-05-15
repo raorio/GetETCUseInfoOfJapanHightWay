@@ -158,13 +158,10 @@ Function GetETCUseInfoOfJapanHightWay()
       
       Dim summaryResult
       Set summaryResult = CreateObject(NAME_OF_SCRIPTING_DICTIONARY)
-      funcDummy = CountUseInfo(useResult, summaryResult)
+      funcDummy = CountUseInfo(MODE_OF_AUTO_CALC_DATE, useResult, summaryResult)
       
       ' print debug
-      For Each key In summaryResult
-        logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "summary key: " & key)
-        logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "summary value: " & summaryResult.Item(key))
-      Next
+      funcDummy = LogoutDictionaryObject(summaryResult, "summary")
       
       Dim strSaveFolderPath
       strSaveFolderPath = strScriptPath & strPeriodDate & DEFINE_DELIM_FOLDER & carNumber & DEFINE_HYPHEN & Right(icCardNumber, 4) & DEFINE_HYPHEN & otherInfo
@@ -177,6 +174,9 @@ Function GetETCUseInfoOfJapanHightWay()
         CreateFile(strSaveFilePath)
         Dim objFile
         Set objFile = OpenFileToWrite(strSaveFilePath)
+        Dim explain
+        explain = EXPLAIN_OF_GATES_IN_SUMMARY & DEFINE_DELIM_CANMA & EXPLAIN_OF_TOLL_IN_SUMMARY & DEFINE_DELIM_CANMA & EXPLAIN_OF_DATE_IN_SUMMARY & DEFINE_EQUAL & EXPLAIN_OF_COUNT_IN_SUMMARY
+        funcDummy = WriteLineToObjectFile(objFile, explain)
         For Each key In summaryResult
           Dim context
           context = key & DEFINE_EQUAL & summaryResult.Item(key)
@@ -269,20 +269,21 @@ End Function
 
 '*******************************************************************************
 ' get target period
-'   @param getMode [in] get mode
+'   @param getDateMode [in] get mode
 '   @retval resultPeriodHash result period hash
 '*******************************************************************************
-Function GetTargetPeriod(getMode)
+Function GetTargetPeriod(getDateMode)
   Dim getPeriodHash
   Dim resultPeriodHash
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetTargetPeriod start")
   
-  If getMode = 1 Then
+  If getDateMode = 1 Then
     ' "auto 20 day per a month"
     Set getPeriodHash = GetTargetPeriodByAuto20DayPerAMonth()
-  'ElseIf getTargetMode = "" Then
-  '  Set getPeriodHash = GetTargetPeriodByTODO()
+  ElseIf getDateMode = 2 Then
+    ' "auto 20 day per a month(each toll)"
+    Set getPeriodHash = GetTargetPeriodByAuto20DayPerAMonth()
   Else
     ' "auto 20 day per a month"
     Set getPeriodHash = GetTargetPeriodByAuto20DayPerAMonth()
@@ -915,30 +916,29 @@ End Function
 
 '*******************************************************************************
 ' CountUseInfo
+'   @param getDateMode [in] get date mode
 '   @param useResult [in] use result
 '   @param summaryResult [in/out] summary result
 '   @retval nothing
 '*******************************************************************************
-Function CountUseInfo(useResult, summaryResult)
+Function CountUseInfo(getDateMode, useResult, summaryResult)
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CountUseInfo start")
   
-  If getMode = 1 Then
+  If getDateMode = 1 Then
     ' "auto 20 day per a month"
     funcDummy = CountUseInfoByAuto20DayPerAMonth(useResult, summaryResult)
-  'ElseIf getTargetMode = "" Then
-  '  funcDummy = CountUseInfoByTODO(useResult, summaryResult)
+  ElseIf getDateMode = 2 Then
+    funcDummy = CountUseInfoByAuto20DayPerAMonthAndEachToll(useResult, summaryResult)
   Else
     ' "auto 20 day per a month"
     funcDummy = CountUseInfoByAuto20DayPerAMonth(useResult, summaryResult)
   End If
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CountUseInfo end")
-  
-  'Set CountUseInfo = 
 End Function
 
 '*******************************************************************************
-' CountUseInfo
+' CountUseInfoByAuto20DayPerAMonth
 '   @param useResult [in] use result
 '   @param summaryResult [in/out] summary result
 '   @retval nothing
@@ -973,8 +973,6 @@ Function CountUseInfoByAuto20DayPerAMonth(useResult, summaryResult)
   Next
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CountUseInfoByAuto20DayPerAMonth end")
-  
-  'Set CountUseInfoByAuto20DayPerAMonth = 
 End Function
 
 '*******************************************************************************
@@ -998,6 +996,64 @@ Function CreateKeyFromAuto20DayPerAMonth(useInfos)
 End Function
 
 '*******************************************************************************
+' CountUseInfoByAuto20DayPerAMonthAndEachToll
+'   @param useResult [in] use result
+'   @param summaryResult [in/out] summary result
+'   @retval nothing
+'*******************************************************************************
+Function CountUseInfoByAuto20DayPerAMonthAndEachToll(useResult, summaryResult)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CountUseInfoByAuto20DayPerAMonthAndEachToll start")
+  
+  Dim keys
+  keys = useResult.Keys()
+  
+  For Each key In keys
+    Dim useInfos
+    useInfos = GetHightWayUseInfoFromKey(key)
+    
+    Dim key
+    key = CreateKeyFromAuto20DayPerAMonthAndEachToll(useInfos)
+    
+    If summaryResult.Exists(key) = True Then
+      ' exist
+      Dim useCount
+      useCount = summaryResult.Item(key)
+      useCount = useCount + 1
+      'funcDummy = summaryResult.Add(key, useCount)
+      summaryResult.Item(key) = useCount
+    Else
+      ' don't exist
+      Dim firstUseCount
+      firstUseCount = 1
+      'funcDummy = summaryResult.Add(key, firstUseCount)
+      summaryResult.Item(key) = firstUseCount
+    End If
+  Next
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CountUseInfoByAuto20DayPerAMonthAndEachToll end")
+End Function
+
+'*******************************************************************************
+' CreateKeyFromHightWayUseInfoAndEachToll
+'   @param useInfos [in] use info
+'   @retval key
+'*******************************************************************************
+Function CreateKeyFromAuto20DayPerAMonthAndEachToll(useInfos)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CreateKeyFromHightWayUseInfoAndEachToll start")
+  
+  Dim month
+  Dim dateParts
+  dateParts = Split(useInfos(NUMBER_OF_DATE_AT_SUMMARY), DELIM_OF_DATE_AT_ETC_SITE)
+  
+  Dim key
+  key = DEFINE_ASTERISK & DELIM_OF_GATE & DEFINE_ASTERISK & DELIM_OF_CATEGORY & useInfos(NUMBER_OF_TOLL_AT_SUMMARY) & DELIM_OF_CATEGORY & dateParts(NUMBER_OF_YEAR_AT_DATE) & DEFINE_SPACE & dateParts(NUMBER_OF_MONTH_AT_DATE)
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CreateKeyFromHightWayUseInfoAndEachToll end")
+  
+  CreateKeyFromAuto20DayPerAMonthAndEachToll = key
+End Function
+
+'*******************************************************************************
 ' SaveSummaryInExcel
 '   @param filePath [in] file path
 '   @param summaryResult [in] summary
@@ -1015,6 +1071,17 @@ Function SaveSummaryInExcel(filePath, summaryResult)
   ' set
   Dim collOfCell
   collOfCell = 1
+  ' explanation
+  '   gates
+  funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, ROW_OF_GATES_CELL, collOfCell, EXPLAIN_OF_GATES_IN_EXCEL)
+  '   toll
+  funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, ROW_OF_TOLL_CELL, collOfCell, EXPLAIN_OF_TOLL_IN_EXCEL)
+  '   date
+  funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, ROW_OF_DATE_CELL, collOfCell, EXPLAIN_OF_DATE_IN_EXCEL)
+  '   count
+  funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, ROW_OF_COUNT_CELL, collOfCell, EXPLAIN_OF_COUNT_IN_EXCEL)
+  collOfCell = collOfCell + 1
+
   Dim valueOfCell
   For Each key In summaryResult
     Dim keyParts

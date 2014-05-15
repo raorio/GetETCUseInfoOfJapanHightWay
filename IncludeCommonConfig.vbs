@@ -11,6 +11,9 @@
 Dim Define_CrLf
 DefineCrLf = vbCrLf
 
+' asterisk
+Const DEFINE_ASTERISK = "*"
+
 ' space
 Const DEFINE_SPACE = " "
 

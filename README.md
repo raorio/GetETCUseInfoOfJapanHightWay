@@ -1,7 +1,9 @@
 GetETCUseInfoOfJapanHightWay
 ============================
 
+
 GetETCUseInfoOfJapanHightWay
+
 
 setup
   specify below environment in file IncludeConfig.vbs
@@ -24,8 +26,14 @@ setup
       *.etc-user.jp
         ’Ç‰Á -> •Â‚¶‚é -> OK
 
+
+special thanks
+  ujihara san, who created concat pdf
+
+
 refer
   etc user for japan
     http://www.etc-user.jp/
   concat pdf(LGPL lisence)
     http://www.ujihara.jp/ConcatPDF/en/
+    http://www.ujihara.jp/ConcatPDF/

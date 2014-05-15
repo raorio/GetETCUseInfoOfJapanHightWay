@@ -29,7 +29,8 @@ Const LOG_TARGET_LEVEL = 4
 ' mode of auto calc date
 '   0: no auto calc date
 '   1: auto 20 day per a month
-Const MODE_OF_AUTO_CALC_DATE = 1
+'   2: auto 20 day per a month(and each toll)
+Const MODE_OF_AUTO_CALC_DATE = 2
 
 ' year of use from
 Dim YEAR_OF_USE_FROM
@@ -323,6 +324,18 @@ Const NUMBER_OF_TIME_AT_SUMMARY = 4
 ' delim of date at etc site
 Const DELIM_OF_DATE_AT_ETC_SITE = "/"
 
+' explain of gates in summary
+Const EXPLAIN_OF_GATES_IN_SUMMARY = "gates"
+
+' explain of toll in summary
+Const EXPLAIN_OF_TOLL_IN_SUMMARY = "toll"
+
+' explain of date in summary
+Const EXPLAIN_OF_DATE_IN_SUMMARY = "date"
+
+' explain of count in summary
+Const EXPLAIN_OF_COUNT_IN_SUMMARY = "count"
+
 
 '---------------------------------------
 ' excel parameter
@@ -354,6 +367,19 @@ Const ROW_OF_DATE_CELL = 3
 ' row of count cell
 Const ROW_OF_COUNT_CELL = 4
 
+' explain of gates in excel
+Const EXPLAIN_OF_GATES_IN_EXCEL = "gates"
+
+' explain of toll in excel
+Const EXPLAIN_OF_TOLL_IN_EXCEL = "toll"
+
+' explain of date in excel
+Const EXPLAIN_OF_DATE_IN_EXCEL = "date"
+
+' explain of count in excel
+Const EXPLAIN_OF_COUNT_IN_EXCEL = "count"
+
+
 '---------------------------------------
 ' save parameter
 '---------------------------------------
@@ -370,11 +396,13 @@ Const SAVE_PREFIX_OF_USE_CONTEXT_PDF = "etc-pdf-html-file-"
 ' save suffix of use contex pdf
 Const SAVE_SUFFIX_OF_USE_CONTEXT_PDF = ".pdf"
 
+
 '-------------------
 ' concat pdf
 '-------------------
 ' is do concat pdf
 Const IS_DO_CONCAT_PDF = True
+
 
 '-------------------
 ' text
@@ -384,6 +412,7 @@ Const IS_SAVE_SUM_FILE = true
 
 ' file name of save sum file
 Const FILE_NAME_OF_SAVE_SUM_FILE = "sum-file.log"
+
 
 '-------------------
 ' debug
