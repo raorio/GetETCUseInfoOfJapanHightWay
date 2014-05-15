@@ -187,7 +187,9 @@ Function GetETCUseInfoOfJapanHightWay()
       End If
       
       ' concat pdf
-      ' TODO
+      If IS_DO_CONCAT_PDF = True Then
+        ExecAndWaitCommand("cmd /c margePDF.bat")
+      End If
       
       ' move to pdf
       ExecAndWaitCommand("cmd /c move /Y " & strScriptPath & "*.pdf " & strSaveFolderPath & DEFINE_DELIM_FOLDER)
@@ -769,9 +771,9 @@ Function ParseBodyOfHtml(bodyOfHtml, objIE, useResult)
       Dim isCheckedAttribute
       isCheckedAttribute = objInputTags(indexOfInput).getAttribute(NAME_OF_CHECKED)
       ' if detect by true/false or checked value, don't detect checked. there for check by not brank
-      If isCheckedAttribute <> DEFINE_BRANK Then
+      If isCheckedAttribute <> DEFINE_BRANK Or isCheckedAttribute = True Then
       'If isCheckedAttribute = NAME_OF_CHECKED_VALUE Then
-      'If isCheckedAttribute = true Then
+      'If isCheckedAttribute = True Then
         Dim key
         key = GetKeyFromBodyOfHtml(objInputTags(indexOfInput))
         

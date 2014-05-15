@@ -26,5 +26,6 @@ setup
 
 refer
   etc user for japan
-  http://www.etc-user.jp/
-
+    http://www.etc-user.jp/
+  concat pdf(LGPL lisence)
+    http://www.ujihara.jp/ConcatPDF/en/

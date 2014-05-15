@@ -371,6 +371,12 @@ Const SAVE_PREFIX_OF_USE_CONTEXT_PDF = "etc-pdf-html-file-"
 Const SAVE_SUFFIX_OF_USE_CONTEXT_PDF = ".pdf"
 
 '-------------------
+' concat pdf
+'-------------------
+' is do concat pdf
+Const IS_DO_CONCAT_PDF = True
+
+'-------------------
 ' text
 '-------------------
 ' is save sum file

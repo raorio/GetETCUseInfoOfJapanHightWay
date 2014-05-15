@@ -26,6 +26,12 @@ Const DEFINE_SLASH = "/"
 ' colon
 Const DEFINE_COLON = ":"
 
+' True
+Const DEFINE_TRUE = "True"
+
+' False
+Const DEFINE_FALSE = "False"
+
 ' brank
 Const DEFINE_BRANK = ""
 
