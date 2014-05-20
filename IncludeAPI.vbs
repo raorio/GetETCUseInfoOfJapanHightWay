@@ -772,7 +772,7 @@ Function ParseBodyOfHtml(bodyOfHtml, objIE, useResult)
       Dim isCheckedAttribute
       isCheckedAttribute = objInputTags(indexOfInput).getAttribute(NAME_OF_CHECKED)
       ' if detect by true/false or checked value, don't detect checked. there for check by not brank
-      If isCheckedAttribute <> DEFINE_BRANK Or isCheckedAttribute = True Then
+      If isCheckedAttribute <> DEFINE_BRANK And isCheckedAttribute <> False Then
       'If isCheckedAttribute = NAME_OF_CHECKED_VALUE Then
       'If isCheckedAttribute = True Then
         Dim key
