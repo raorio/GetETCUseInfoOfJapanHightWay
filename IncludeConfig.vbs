@@ -80,8 +80,8 @@ Const SECOND_NAME_OF_USE_TARGET_GATE = "è¿ìcè„ÇË,è¿ìcâ∫ÇË"
 ' toll of use target
 '   delimiter is ,
 '   support regex(http://msdn.microsoft.com/ja-jp/library/ms974570.aspx)
-'   ex: TOLL_OF_USE_TARGET = "410,370"
-Const TOLL_OF_USE_TARGET = "410,370"
+'   ex: TOLL_OF_USE_TARGET = "410,370,310,280"
+Const TOLL_OF_USE_TARGET = ""
 
 ' name's of exclude gate
 '   delimiter is ,
@@ -141,7 +141,7 @@ Const SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI = 500
 Const IS_SHOW_MAIN_WEB_GUI = true
 
 ' is conform before hight way use determ
-Const IS_CONFORM_BEFORE_HIGHT_WAY_USE_DETERM = false
+Const IS_CONFORM_BEFORE_HIGHT_WAY_USE_DETERM = true
 
 '---------------------------------------
 ' etc site parameter
