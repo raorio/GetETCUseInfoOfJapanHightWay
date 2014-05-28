@@ -598,6 +598,21 @@ End Function
 ' string api
 '-------------------------------------------------------------------------------
 '*******************************************************************************
+' DeleteHeadTailChar
+'   @param targetString [in] target string
+'   @retval replaced string
+'*******************************************************************************
+Function DeleteHeadTailChar(targetString)
+  Dim replaceString
+  
+  Dim lenghtString
+  lenghtString = Len(targetString)
+  replaceString = Mid(targetString, 2, lenghtString - 2)
+  
+  DeleteHeadTailChar = replaceString
+End Function
+
+'*******************************************************************************
 ' DeleteSpace
 '   @param targetString [in] target string
 '   @retval replaced string
@@ -609,6 +624,35 @@ Function DeleteSpace(targetString)
   replaceString = Replace(replaceString, DEFINE_SPACE, DEFINE_BRANK)
   
   DeleteSpace = replaceString
+End Function
+
+'*******************************************************************************
+' DeleteHeadSpace
+'   @param targetString [in] target string
+'   @retval replaced string
+'*******************************************************************************
+Function DeleteHeadSpace(targetString)
+  Dim replaceString
+  
+  replaceString = Replace(targetString, DEFINE_SPACE, DEFINE_BRANK, 1, 1)
+  
+  DeleteHeadSpace = replaceString
+End Function
+
+'*******************************************************************************
+' DeleteTailSpace_TODO
+'   @param targetString [in] target string
+'   @retval replaced string
+'*******************************************************************************
+Function DeleteTailSpace_TODO(targetString)
+  Dim replaceString
+  
+  Dim indexTail
+  indexTail = Len(targetString)
+  ' TODO invalid
+  replaceString = Replace(targetString, DEFINE_SPACE, DEFINE_BRANK, indexTail, 1)
+  
+  DeleteTailSpace = replaceString
 End Function
 
 '*******************************************************************************

@@ -210,10 +210,16 @@ Const NUMBER_OF_IE8_VERSION = 8
 Const NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE10 = 8
 
 ' number of date in hight way use parts for IE 10
-Const NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS_FOR_IE10 = 3
+Const NUMBER_OF_DATE_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10 = 1
 
 ' number of time in hight way use parts for IE 10
-Const NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE10 = 4
+Const NUMBER_OF_TIME_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10 = 2
+
+' number of second gate and date in hight way use parts for IE 10
+Const NUMBER_OF_SECOND_GATE_AND_DATE_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10 = 3
+
+' number of time in hight way use parts for IE 10
+Const NUMBER_OF_TIME_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10 = 4
 
 ' number of first gate in hight way use parts for IE 10
 Const NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10 = 5
@@ -228,7 +234,13 @@ Const NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE10 = 8
 Const NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE8 = 7
 
 ' number of date in hight way use parts for IE 8
-Const NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS_FOR_IE8 = 2
+Const NUMBER_OF_DATE_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8 = 0
+
+' number of time in hight way use parts for IE 8
+Const NUMBER_OF_TIME_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8 = 1
+
+' number of second gate and date first gate in hight way use parts for IE 8
+Const NUMBER_OF_SECOND_GATE_AND_DATE_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8 = 2
 
 ' number of time in hight way use parts for IE 8
 Const NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE8 = 3
@@ -241,6 +253,12 @@ Const NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8 = 5
 
 ' number of toll in hight way use parts for IE 8
 Const NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE8 = 7
+
+' number of second gate hight way use parts when second gate and first gate
+Const NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_WHEN_SECOND_GATE_AND_FIRST = 0
+
+' number of date first gate hight way use parts when second gate and first gate
+Const NUMBER_OF_DATE_FIRST_GATE_HIGHT_WAY_USE_PARTS_WHEN_SECOND_GATE_AND_FIRST = 1
 
 ' name of checked
 Const NAME_OF_CHECKED = "CHECKED"
@@ -260,6 +278,9 @@ Const DELIM_OF_CATEGORY = ","
 
 ' delim of GATE
 Const DELIM_OF_GATE = "-"
+
+' delim of DATE_TIME
+Const DELIM_OF_GATE_TIME = "-"
 
 ' number of key size
 Const NUMBER_OF_KEY_SIZE = 3

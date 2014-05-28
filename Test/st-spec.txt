@@ -1,8 +1,11 @@
 spec list
 
 ================================================================================
-No  OS      version     browzer net env     result
+No  OS      version     browzer net env     use info                    result
 --------------------------------------------------------------------------------
-1   windows 7 sp1 64bit ie 11   no proxy    ok
+1   windows 7 sp1 64bit ie 11   no proxy    first gate                  ok
+2   windows 7 sp1 64bit ie 8    proxy       first gate                  ok
+3   windows 7 sp1 64bit ie 11   no proxy    both gate                   ok
+4   windows 7 sp1 64bit ie 11   no proxy    both gate and discount      ok
 --------------------------------------------------------------------------------
 

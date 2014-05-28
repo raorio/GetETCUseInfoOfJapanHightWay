@@ -817,49 +817,8 @@ Function GetKeyFromBodyOfHtml(objElement)
   ' checked
   Dim inputBody
   inputBody = objElement.parentNode.parentNode.innerText
-  Dim inputBodyParts
-  inputBodyParts = Split(inputBody, DefineCrLf)
   
-  Dim dateOfHightWayUse
-  Dim timeOfHightWayUse
-  Dim firstGateOfHightWayUse
-  Dim secondGateOfHightWayUse
-  Dim tollOfHightWayUse
-  Dim tollOfHightWayUseDeleteSpaceAndYen
-  Dim tollOfHightWayUseDeleteSpace
-  Dim tollOfHightWayUseParts
-  If UBound(inputBodyParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE10 Then
-    ' valid format
-    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & inputBodyParts(NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE10))
-    dateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS_FOR_IE10))
-    timeOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE10))
-    firstGateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10))
-    secondGateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10))
-    tollOfHightWayUseDeleteSpace = DeleteSpace2MoreSpace(inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE10))
-    tollOfHightWayUseDeleteSpaceAndYen = Replace(tollOfHightWayUseDeleteSpace, PRISE_PREFIX_VALUE, DEFINE_BRANK)
-    tollOfHightWayUseParts = Split(tollOfHightWayUseDeleteSpaceAndYen, DEFINE_SPACE)
-    tollOfHightWayUse = tollOfHightWayUseParts(NUMBER_OF_TOLL_PARTS_IN_TOLL)
-    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & dateOfHightWayUse & DEFINE_SPACE & timeOfHightWayUse & DEFINE_SPACE & firstGateOfHightWayUse & DEFINE_SPACE & secondGateOfHightWayUse & DEFINE_SPACE & tollOfHightWayUse)
-    
-    key = CreateKeyFromHightWayUseInfo(dateOfHightWayUse, timeOfHightWayUse, firstGateOfHightWayUse, secondGateOfHightWayUse, tollOfHightWayUse)
-  ElseIf UBound(inputBodyParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE8 Then
-    ' valid format
-    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & inputBodyParts(NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE8))
-    dateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_DATE_HIGHT_WAY_USE_PARTS_FOR_IE8))
-    timeOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE8))
-    firstGateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8))
-    secondGateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8))
-    tollOfHightWayUseDeleteSpace = DeleteSpace2MoreSpace(inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE8))
-    tollOfHightWayUseDeleteSpaceAndYen = Replace(tollOfHightWayUseDeleteSpace, PRISE_PREFIX_VALUE, DEFINE_BRANK)
-    tollOfHightWayUseParts = Split(tollOfHightWayUseDeleteSpaceAndYen, DEFINE_SPACE)
-    tollOfHightWayUse = tollOfHightWayUseParts(NUMBER_OF_TOLL_PARTS_IN_TOLL)
-    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & dateOfHightWayUse & DEFINE_SPACE & timeOfHightWayUse & DEFINE_SPACE & firstGateOfHightWayUse & DEFINE_SPACE & secondGateOfHightWayUse & DEFINE_SPACE & tollOfHightWayUse)
-    
-    key = CreateKeyFromHightWayUseInfo(dateOfHightWayUse, timeOfHightWayUse, firstGateOfHightWayUse, secondGateOfHightWayUse, tollOfHightWayUse)
-  Else
-    ' invalid format
-    ' skip
-  End If
+  key = GetKeyFromSingleHightWayUse(inputBody)
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetKeyFromBodyOfHtml end")
   
@@ -867,20 +826,102 @@ Function GetKeyFromBodyOfHtml(objElement)
 End Function
 
 '*******************************************************************************
+' GetKeyFromSingleHightWayUse
+'   @param textOfSingleHightWayUse [in] text of single hight way use
+'   @retval key
+'*******************************************************************************
+Function GetKeyFromSingleHightWayUse(textOfSingleHightWayUse)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetKeyFromSingleHightWayUse start")
+  
+  Dim key
+  
+  Dim inputBodyParts
+  inputBodyParts = Split(textOfSingleHightWayUse, DefineCrLf)
+  Dim i
+  For i = 0 To UBound(inputBodyParts) - 1 Step 1
+    If Len(inputBodyParts(i)) >= 2 Then
+      inputBodyParts(i) = DeleteHeadTailChar(inputBodyParts(i))
+    End If
+  Next
+  
+  Dim secondGateAndDateOfHightWayUse
+  Dim dateOfFirstGateHightWayUse
+  Dim timeOfFirstGateHightWayUse
+  Dim dateOfSecondGateHightWayUse
+  Dim timeOfSecondGateHightWayUse
+  Dim firstGateOfHightWayUse
+  Dim secondGateOfHightWayUse
+  Dim tollOfHightWayUse
+  Dim tollOfHightWayUseDeleteSpaceAndYenAndConma
+  Dim tollOfHightWayUseDeleteSpaceAndYen
+  Dim tollOfHightWayUseDeleteSpace
+  Dim tollOfHightWayUseParts
+  If UBound(inputBodyParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE10 Then
+    ' valid format
+    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & inputBodyParts(NUMBER_OF_DATE_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_TIME_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_SECOND_GATE_AND_DATE_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE10))
+    secondGateAndDateOfHightWayUse = Split(inputBodyParts(NUMBER_OF_SECOND_GATE_AND_DATE_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10), DEFINE_SPACE & DEFINE_SPACE)
+    secondGateOfHightWayUse = secondGateAndDateOfHightWayUse(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_WHEN_SECOND_GATE_AND_FIRST)
+    dateOfFirstGateHightWayUse = secondGateAndDateOfHightWayUse(NUMBER_OF_DATE_FIRST_GATE_HIGHT_WAY_USE_PARTS_WHEN_SECOND_GATE_AND_FIRST)
+    timeOfFirstGateHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_TIME_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10))
+    dateOfSecondGateHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_DATE_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10))
+    timeOfSecondGateHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_TIME_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10))
+    firstGateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10))
+    tollOfHightWayUseDeleteSpace = DeleteSpace2MoreSpace(inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE10))
+    tollOfHightWayUseDeleteSpaceAndYen = Replace(tollOfHightWayUseDeleteSpace, PRISE_PREFIX_VALUE, DEFINE_BRANK)
+    tollOfHightWayUseDeleteSpaceAndYenAndConma = Replace(tollOfHightWayUseDeleteSpaceAndYen, DEFINE_DELIM_CANMA, DEFINE_BRANK)
+    tollOfHightWayUseParts = Split(tollOfHightWayUseDeleteSpaceAndYenAndConma, DEFINE_SPACE)
+    tollOfHightWayUse = tollOfHightWayUseParts(NUMBER_OF_TOLL_PARTS_IN_TOLL)
+    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & dateOfSecondGateHightWayUse & DEFINE_SPACE & timeOfSecondGateHightWayUse & DEFINE_SPACE & dateOfFirstGateHightWayUse & DEFINE_SPACE & timeOfFirstGateHightWayUse & DEFINE_SPACE & firstGateOfHightWayUse & DEFINE_SPACE & secondGateOfHightWayUse & DEFINE_SPACE & tollOfHightWayUse)
+    
+    key = CreateKeyFromHightWayUseInfo(dateOfFirstGateHightWayUse, timeOfFirstGateHightWayUse, dateOfSecondGateHightWayUse, timeOfSecondGateHightWayUse, firstGateOfHightWayUse, secondGateOfHightWayUse, tollOfHightWayUse)
+  ElseIf UBound(inputBodyParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE8 Then
+    ' valid format
+    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & inputBodyParts(NUMBER_OF_DATE_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_TIME_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_SECOND_GATE_AND_DATE_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE8))
+    secondGateAndDateOfHightWayUse = Split(inputBodyParts(NUMBER_OF_SECOND_GATE_AND_DATE_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8), DEFINE_SPACE & DEFINE_SPACE)
+    secondGateOfHightWayUse = secondGateAndDateOfHightWayUse(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_WHEN_SECOND_GATE_AND_FIRST)
+    dateOfFirstGateHightWayUse = secondGateAndDateOfHightWayUse(NUMBER_OF_DATE_FIRST_GATE_HIGHT_WAY_USE_PARTS_WHEN_SECOND_GATE_AND_FIRST)
+    timeOfFirstGateHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE8))
+    dateOfSecondGateHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_DATE_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8))
+    timeOfSecondGateHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_TIME_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8))
+    firstGateOfHightWayUse = DeleteSpace(inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8))
+    tollOfHightWayUseDeleteSpace = DeleteSpace2MoreSpace(inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE8))
+    tollOfHightWayUseDeleteSpaceAndYen = Replace(tollOfHightWayUseDeleteSpace, PRISE_PREFIX_VALUE, DEFINE_BRANK)
+    tollOfHightWayUseDeleteSpaceAndYenAndConma = Replace(tollOfHightWayUseDeleteSpaceAndYen, DEFINE_DELIM_CANMA, DEFINE_BRANK)
+    tollOfHightWayUseParts = Split(tollOfHightWayUseDeleteSpaceAndYenAndConma, DEFINE_SPACE)
+    tollOfHightWayUse = tollOfHightWayUseParts(NUMBER_OF_TOLL_PARTS_IN_TOLL)
+    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & dateOfSecondGateHightWayUse & DEFINE_SPACE & timeOfSecondGateHightWayUse & DEFINE_SPACE & dateOfFirstGateHightWayUse & DEFINE_SPACE & timeOfFirstGateHightWayUse & DEFINE_SPACE & firstGateOfHightWayUse & DEFINE_SPACE & secondGateOfHightWayUse & DEFINE_SPACE & tollOfHightWayUse)
+    
+    key = CreateKeyFromHightWayUseInfo(dateOfFirstGateHightWayUse, timeOfFirstGateHightWayUse, dateOfSecondGateHightWayUse, timeOfSecondGateHightWayUse, firstGateOfHightWayUse, secondGateOfHightWayUse, tollOfHightWayUse)
+  Else
+    ' invalid format
+    ' skip
+    logReturnValueDummy = logOutWarn(LOG_TARGET_LEVEL, "skip, becaouseinvalid format")
+  End If
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetKeyFromSingleHightWayUse end")
+  
+  GetKeyFromSingleHightWayUse = key
+End Function
+
+'*******************************************************************************
 ' CreateKeyFromHightWayUseInfo
-'   @param date [in] date
-'   @param time [in] time
+'   @param dateOfFirstGate [in] date of first gate
+'   @param timeOfFirstGate [in] time of first gate
+'   @param dateOfSecondGate [in] date of second gate
+'   @param timeOfSecondGate [in] time of second gate
 '   @param firstGate [in] first gate
 '   @param secondGate [in] second gate
 '   @param toll [in] toll
 '   @retval key
 '*******************************************************************************
-Function CreateKeyFromHightWayUseInfo(date, time, firstGate, secondGate, toll)
+Function CreateKeyFromHightWayUseInfo(dateOfFirstGate, timeOfFirstGate, dateOfSecondGate, timeOfSecondGate, firstGate, secondGate, toll)
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CreateKeyFromHightWayUseInfo start")
   
   Dim key
-  key = firstGate & DELIM_OF_GATE & secondGate & DELIM_OF_CATEGORY & toll & DELIM_OF_CATEGORY & date & DEFINE_SPACE & time
+  key = firstGate & DELIM_OF_GATE & secondGate & DELIM_OF_CATEGORY & toll & DELIM_OF_CATEGORY & dateOfFirstGate & DEFINE_SPACE & timeOfFirstGate & DELIM_OF_GATE_TIME & dateOfSecondGate & DEFINE_SPACE & timeOfSecondGate
   
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CreateKeyFromHightWayUseInfo key: " & key)
+
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CreateKeyFromHightWayUseInfo end")
   
   CreateKeyFromHightWayUseInfo = key
