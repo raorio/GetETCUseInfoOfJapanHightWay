@@ -112,7 +112,7 @@ Function GetETCUseInfoOfJapanHightWay()
       sequenceNumber = 1
       Dim isContinue
       isContinue = True
-      ' request and parse
+      ' request and parse, until reach end of link page
       Do Until isContinue = False
         isContinue = False
         isContinue = RequestAndParsePage(mainIEObj, sequenceNumber, useResult)
@@ -122,11 +122,13 @@ Function GetETCUseInfoOfJapanHightWay()
         Set objAOfTag = mainIEObj.Document.getElementsByTagName(NAME_OF_A_NAME)
         Dim indexOfATag
         Dim hrefName
+        Dim targetPage
+        targetPage = -1
+        Dim isClickNextPage
+        isClickNextPage = False
         For indexOfATag = 0 To objAOfTag.Length - 1
           hrefName = objAOfTag(indexOfATag).getAttribute(NAME_OF_ATTRIBUTE_HREF)
           If hrefName <> DEFINE_BRANK Then
-            Dim targetPage
-            targetPage = -1
             Dim hrefNameParts
             hrefNameParts = Split(hrefName, NAME_OF_LINK_PAGE)
             If UBound(hrefNameParts) = 1 Then
@@ -139,19 +141,24 @@ Function GetETCUseInfoOfJapanHightWay()
             ' TODO
             
             If currentPage < targetPage Then
-              logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "target page is: " & hrefName)
-              currentPage = targetPage
-              objAOfTag(indexOfATag).Click
-              indexOfATag = objAOfTag.Length
-              
-              funcDummy = WaitIEObject(mainIEObj, SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI)
-              
-              isContinue = True
+              logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "currentPage page is: " & currentPage & " < target page is: " & hrefName)
+              isClickNextPage = True
               
               Exit For
             End If
           End If
         Next
+        
+        If isClickNextPage = True Then
+          logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "isClickNextPage is: " & isClickNextPage)
+          currentPage = targetPage
+          objAOfTag(indexOfATag).Click
+          indexOfATag = objAOfTag.Length
+          
+          funcDummy = WaitIEObject(mainIEObj, SLEEP_TIME_TO_WAIT_SHOW_WEB_GUI)
+          
+          isContinue = True
+        End If
       Loop
       
       Dim summaryResult
@@ -1151,6 +1158,67 @@ Function SaveSummaryInExcel(filePath, summaryResult)
   funcDummy = SaveOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK)
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SaveSummaryInExcel end")
+End Function
+
+'*******************************************************************************
+' SaveSummaryToSpecifyCellInExcel
+'   @param filePath [in] file path
+'   @param summaryResult [in] summary
+'   @retval key
+'*******************************************************************************
+Function SaveSummaryToSpecifyCellInExcel(filePath, summaryResult)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SaveSummaryToSpecifyCellInExcel start")
+  
+  Dim objExcel
+  Set objExcel = CreateEXCELObject(IS_SHOW_EXCEL_WINDOW)
+  
+  ' open
+  funcDummy = OpenWorkBooksOfExcel(objExcel, filePath)
+  
+  ' set
+  Dim collOfCell
+  collOfCell = 1
+  
+  'Dim currentMonthNormalToll
+  'Dim currentMonthPlaseDownToll
+  'Dim currentMonthNormalCount
+  'Dim currentMonthPlaseDownCount
+  'Dim lastMonthNormalToll
+  'Dim lastMonthPlaseDownToll
+  'Dim lastMonthNormalCount
+  'Dim lastMonthPlaseDownCount
+  'TODO
+  
+  Dim valueOfCell
+  For Each key In summaryResult
+    Dim keyParts
+    keyParts = Split(key, DEFINE_DELIM_CANMA)
+    
+    Dim gates
+    Dim toll
+    Dim date
+    Dim count
+    gates = keyParts(0)
+    toll = keyParts(1)
+    date = keyParts(2)
+    count = summaryResult.Item(key)
+    
+    ' gates
+    funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, ROW_OF_GATES_CELL, collOfCell, gates)
+    ' toll
+    funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, ROW_OF_TOLL_CELL, collOfCell, toll)
+    ' date
+    funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, ROW_OF_DATE_CELL, collOfCell, date)
+    ' count
+    funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, ROW_OF_COUNT_CELL, collOfCell, count)
+    
+    collOfCell = collOfCell + 1
+  Next
+  
+  ' save
+  funcDummy = SaveOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK)
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SaveSummaryToSpecifyCellInExcel end")
 End Function
 
 '*******************************************************************************

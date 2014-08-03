@@ -1,0 +1,35 @@
+
+api sequense
+	GetETCUseInfoOfJapanHightWay():Main.vbs
+		ReadUserInfoFile():IncludeAPI.vbs
+			ユーザ情報ファイルの読み込み
+		For文、ユーザ情報分繰り返し:IncludeAPI.vbs
+			CreateIEObject():IncludeAPI.vbs
+				IE作成
+			Do Until文、リンクの最後に到達するまで繰り返し:IncludeAPI.vbs
+				RequestAndParsePage():IncludeAPI.vbs
+				For文、次のリンクページをチェック:IncludeAPI.vbs
+				Click():IncludeAPI.vbs
+					次のリンクページに移動
+			ExecAndWaitCommand("cmd /c mkdir " & strSaveFolderPath):IncludeAPI.vbs
+				保存フォルダ作成
+			If IS_SAVE_SUM_FILE = True Then:IncludeAPI.vbs
+				合計ファイル作成
+			If IS_DO_CONCAT_PDF = True Then:IncludeAPI.vbs
+				ExecAndWaitCommand("cmd /c margePDF.bat"):IncludeAPI.vbs
+					concatPDFでPDFファイル結合
+			ExecAndWaitCommand("cmd /c move /Y " & strScriptPath & "*.pdf " & strSaveFolderPath & DEFINE_DELIM_FOLDER)
+				保存フォルダにPDFファイルを移動
+			If IS_SAVE_EXCEL = True Then
+				エクセルファイル保存
+				TODO:各保存モードに応じたAPIコール
+				ExecAndWaitCommand("cmd /c copy /Y " & strScriptPath & FILE_NAME_OF_EXCEL & DEFINE_SPACE & strSaveExcelPath)
+					エクセルファイルコピー
+				SaveSummaryInExcel():IncludeAPI.vbs
+					エクセルファイルに合計を保存
+				SaveSummaryToSpecifyCellInExcel:IncludeAPI.vbs
+					エクセルファイルに、指定セルに合計を保存
+					TODO:開発中
+
+	IncludeCommonAPI.vbs
+
