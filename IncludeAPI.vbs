@@ -67,9 +67,6 @@ Function GetETCUseInfoOfJapanHightWay()
   strScriptPath = Replace(WScript.ScriptFullName, WScript.ScriptName, "")
   strPeriodDate = targetFromYear & targetFromMonth & targetFromDay & DEFINE_HYPHEN & targetToYear & targetToMonth & targetToDay
   
-  Dim mainIEObj
-  mainIEObj = CreateIEObject(isDispExecIE, URL_OF_ETC_SITE, webSleepTime)
-  
   Dim userInfos
   userInfos = ReadUserInfoFile(FILE_NAME_OF_USER_INFO)
   If IsNull(userInfos) = True Then
@@ -78,6 +75,7 @@ Function GetETCUseInfoOfJapanHightWay()
   End If
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "user info size: " & UBound(userInfos))
+  Dim mainIEObj
   'For Each userInfo In userInfos
   For indexObUserInfos = 0 To UBound(userInfos) - 1
     Dim userInfo
