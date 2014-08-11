@@ -18,18 +18,20 @@ api sequense
 			If IS_DO_CONCAT_PDF = True Then:IncludeAPI.vbs
 				ExecAndWaitCommand("cmd /c margePDF.bat"):IncludeAPI.vbs
 					concatPDFでPDFファイル結合
-			ExecAndWaitCommand("cmd /c move /Y " & strScriptPath & "*.pdf " & strSaveFolderPath & DEFINE_DELIM_FOLDER)
+			ExecAndWaitCommand("cmd /c move /Y " & strScriptPath & "*.pdf " & strSaveFolderPath & DEFINE_DELIM_FOLDER):IncludeAPI.vbs
 				保存フォルダにPDFファイルを移動
-			If IS_SAVE_EXCEL = True Then
+			If IS_SAVE_EXCEL = True Then:IncludeAPI.vbs
 				エクセルファイル保存
 				TODO:各保存モードに応じたAPIコール
-				ExecAndWaitCommand("cmd /c copy /Y " & strScriptPath & FILE_NAME_OF_EXCEL & DEFINE_SPACE & strSaveExcelPath)
+				ExecAndWaitCommand("cmd /c copy /Y " & strScriptPath & FILE_NAME_OF_EXCEL & DEFINE_SPACE & strSaveExcelPath):IncludeAPI.vbs
 					エクセルファイルコピー
 				SaveSummaryInExcel():IncludeAPI.vbs
-					エクセルファイルに合計を保存
-				SaveSummaryToSpecifyCellInExcel:IncludeAPI.vbs
-					エクセルファイルに、指定セルに合計を保存
-					TODO:開発中
+					モードにしたがってエクセルファイルに合計を保存
+					SaveSummaryOfListInExcel:IncludeAPI.vbs
+						エクセルファイルに、リスト形式で合計を保存
+					SaveSummaryToSpecifyCellInExcel:IncludeAPI.vbs
+						エクセルファイルに、指定セルに合計を保存
+						TODO:開発中
 
 	IncludeCommonAPI.vbs
 

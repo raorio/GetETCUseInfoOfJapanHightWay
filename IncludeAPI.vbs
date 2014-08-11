@@ -203,7 +203,7 @@ Function GetETCUseInfoOfJapanHightWay()
         Dim strSaveExcelPath
         strSaveExcelPath = strSaveFolderPath & DEFINE_DELIM_FOLDER & FILE_NAME_OF_EXCEL
         ExecAndWaitCommand("cmd /c copy /Y " & strScriptPath & FILE_NAME_OF_EXCEL & DEFINE_SPACE & strSaveExcelPath)
-        funcDummy = SaveSummaryInExcel(strSaveExcelPath, summaryResult)
+        funcDummy = SaveSummaryInExcel(strSaveExcelPath, periodParams, summaryResult)
       End If
       
       Set mainIEObj = Nothing
@@ -1102,11 +1102,30 @@ End Function
 '*******************************************************************************
 ' SaveSummaryInExcel
 '   @param filePath [in] file path
+'   @param periodParams [in] period param's
 '   @param summaryResult [in] summary
 '   @retval key
 '*******************************************************************************
-Function SaveSummaryInExcel(filePath, summaryResult)
+Function SaveSummaryInExcel(filePath, periodParams, summaryResult)
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SaveSummaryInExcel start")
+  
+  If MODE_OF_SAVE_EXCEL = MODE_OF_SAVE_EXCEL_SPECIFY_CELL Then
+    funcDummy = SaveSummaryToSpecifyCellInExcel(filePath, periodParams, summaryResult)
+  Else
+    funcDummy = SaveSummaryOfListInExcel(filePath, summaryResult)
+  End If
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SaveSummaryInExcel end")
+End Function
+
+'*******************************************************************************
+' SaveSummaryOfListInExcel
+'   @param filePath [in] file path
+'   @param summaryResult [in] summary
+'   @retval key
+'*******************************************************************************
+Function SaveSummaryOfListInExcel(filePath, summaryResult)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SaveSummaryOfListInExcel start")
   
   Dim objExcel
   Set objExcel = CreateEXCELObject(IS_SHOW_EXCEL_WINDOW)
@@ -1127,8 +1146,7 @@ Function SaveSummaryInExcel(filePath, summaryResult)
   '   count
   funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, ROW_OF_COUNT_CELL, collOfCell, EXPLAIN_OF_COUNT_IN_EXCEL)
   collOfCell = collOfCell + 1
-
-  Dim valueOfCell
+  
   For Each key In summaryResult
     Dim keyParts
     keyParts = Split(key, DEFINE_DELIM_CANMA)
@@ -1157,17 +1175,29 @@ Function SaveSummaryInExcel(filePath, summaryResult)
   ' save
   funcDummy = SaveOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK)
   
-  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SaveSummaryInExcel end")
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SaveSummaryOfListInExcel end")
 End Function
 
 '*******************************************************************************
 ' SaveSummaryToSpecifyCellInExcel
 '   @param filePath [in] file path
+'   @param periodParams [in] period param's
 '   @param summaryResult [in] summary
 '   @retval key
 '*******************************************************************************
-Function SaveSummaryToSpecifyCellInExcel(filePath, summaryResult)
+Function SaveSummaryToSpecifyCellInExcel(filePath, periodParams, summaryResult)
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SaveSummaryToSpecifyCellInExcel start")
+  
+  ' init
+  Dim late1Month
+  late1Month = -1
+  Dim late2Month
+  late2Month = -1
+  Dim late3Month
+  late3Month = -1
+  
+  ' ÅVŒŽ‚Æˆê‚Â‘O‚ÌŒŽ‚ð”»’f
+  ' TODO
   
   Dim objExcel
   Set objExcel = CreateEXCELObject(IS_SHOW_EXCEL_WINDOW)
@@ -1175,21 +1205,32 @@ Function SaveSummaryToSpecifyCellInExcel(filePath, summaryResult)
   ' open
   funcDummy = OpenWorkBooksOfExcel(objExcel, filePath)
   
-  ' set
-  Dim collOfCell
-  collOfCell = 1
+  ' reset
+  Dim resetRow
+  Dim resetColumn
+  resetRow = ROW_OF_COUNT_NORMAL_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL
+  resetColumn = COLUMN_OF_COUNT_NORMAL_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL
+  funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, resetRow, resetColumn, 0)
+  resetRow = ROW_OF_COUNT_DISCOUNT_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL
+  resetColumn = COLUMN_OF_COUNT_DISCOUNT_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL
+  funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, resetRow, resetColumn, 0)
+  resetRow = ROW_OF_COUNT_NORMAL_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL
+  resetColumn = COLUMN_OF_COUNT_NORMAL_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL
+  funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, resetRow, resetColumn, 0)
+  resetRow = ROW_OF_COUNT_DISCOUNT_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL
+  resetColumn = COLUMN_OF_COUNT_DISCOUNT_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL
+  funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, resetRow, resetColumn, 0)
   
-  'Dim currentMonthNormalToll
-  'Dim currentMonthPlaseDownToll
-  'Dim currentMonthNormalCount
-  'Dim currentMonthPlaseDownCount
-  'Dim lastMonthNormalToll
-  'Dim lastMonthPlaseDownToll
-  'Dim lastMonthNormalCount
-  'Dim lastMonthPlaseDownCount
+  Dim currentMonthNormalToll
+  Dim currentMonthPlaseDownToll
+  Dim currentMonthNormalCount
+  Dim currentMonthPlaseDownCount
+  Dim lastMonthNormalToll
+  Dim lastMonthPlaseDownToll
+  Dim lastMonthNormalCount
+  Dim lastMonthPlaseDownCount
   'TODO
   
-  Dim valueOfCell
   For Each key In summaryResult
     Dim keyParts
     keyParts = Split(key, DEFINE_DELIM_CANMA)
@@ -1203,16 +1244,38 @@ Function SaveSummaryToSpecifyCellInExcel(filePath, summaryResult)
     date = keyParts(2)
     count = summaryResult.Item(key)
     
-    ' gates
-    funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, ROW_OF_GATES_CELL, collOfCell, gates)
-    ' toll
-    funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, ROW_OF_TOLL_CELL, collOfCell, toll)
-    ' date
-    funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, ROW_OF_DATE_CELL, collOfCell, date)
-    ' count
-    funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, ROW_OF_COUNT_CELL, collOfCell, count)
+    Dim dateParts
+    dateParts = Split(date, DEFINE_DELIM_DATE_TIME)
     
-    collOfCell = collOfCell + 1
+    Dim targetRow
+    Dim targetColumn
+    If dateParts(1) = periodParams.Item(NAME_OF_USE_TO_MONTH) Then
+      ' current month
+      ' TODO 410(310)->normal, !410(310)->discownt
+      If toll = 410 Or toll = 310 Then
+        ' normal price
+        targetRow = ROW_OF_COUNT_NORMAL_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL
+        targetColumn = COLUMN_OF_COUNT_NORMAL_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL
+      Else
+        ' discownt price
+        targetRow = ROW_OF_COUNT_DISCOUNT_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL
+        targetColumn = COLUMN_OF_COUNT_DISCOUNT_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL
+      End If
+    Else
+      ' last month
+      ' TODO 410(310)->normal, !410(310)->discownt
+      If toll = 410 Or toll = 310 Then
+        ' normal price
+        targetRow = ROW_OF_COUNT_NORMAL_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL
+        targetColumn = COLUMN_OF_COUNT_NORMAL_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL
+      Else
+        ' discownt price
+        targetRow = ROW_OF_COUNT_DISCOUNT_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL
+        targetColumn = COLUMN_OF_COUNT_DISCOUNT_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL
+      End If
+    End If
+    currentValue = GetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, targetRow, targetColumn)
+    funcDummy = SetCellsOfExcel(objExcel, NUMBER_OF_FIRST_WORKBOOK, NUMBER_OF_FIRST_WORKSHEET, targetRow, targetColumn, count + currentValue)
   Next
   
   ' save

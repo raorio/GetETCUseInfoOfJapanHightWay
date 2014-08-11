@@ -21,7 +21,9 @@ Const VBS_TIMEOUT = -1
 '   3: info
 '   4: debug
 '   5: detail debug
-Const LOG_TARGET_LEVEL = 4
+Const LOG_TARGET_LEVEL = 3
+'Const LOG_TARGET_LEVEL = 4
+'Const LOG_TARGET_LEVEL = 5
 
 '-------------------
 ' date
@@ -30,7 +32,12 @@ Const LOG_TARGET_LEVEL = 4
 '   0: no auto calc date
 '   1: auto 20 day per a month
 '   2: auto 20 day per a month(and each toll)
-Const MODE_OF_AUTO_CALC_DATE = 2
+Const MODE_OF_AUTO_CALC_DATE_NO = 0
+Const MODE_OF_AUTO_CALC_DATE_AUTO_20DAY_PER_MONTH = 1
+Const MODE_OF_AUTO_CALC_DATE_AUTO_20DAY_PER_MONTH_EACH_TALL = 2
+Dim MODE_OF_AUTO_CALC_DATE
+MODE_OF_AUTO_CALC_DATE = MODE_OF_AUTO_CALC_DATE_AUTO_20DAY_PER_MONTH
+'MODE_OF_AUTO_CALC_DATE = MODE_OF_AUTO_CALC_DATE_AUTO_20DAY_PER_MONTH_EACH_TALL
 
 ' year of use from
 Dim YEAR_OF_USE_FROM
@@ -364,6 +371,16 @@ Const EXPLAIN_OF_COUNT_IN_SUMMARY = "count"
 ' is save excel
 Const IS_SAVE_EXCEL = true
 
+' mode of save excel
+'   0: list
+'   1: specify cell
+Const MODE_OF_SAVE_EXCEL_LIST = 0
+Const MODE_OF_SAVE_EXCEL_SPECIFY_CELL = 1
+Dim MODE_OF_SAVE_EXCEL
+MODE_OF_SAVE_EXCEL = MODE_OF_SAVE_EXCEL_LIST
+'MODE_OF_SAVE_EXCEL = MODE_OF_SAVE_EXCEL_SPECIFY_CELL
+
+' config of mode list
 ' file name of excel
 Const FILE_NAME_OF_EXCEL = "UseSummary.xlsx"
 
@@ -399,6 +416,43 @@ Const EXPLAIN_OF_DATE_IN_EXCEL = "date"
 
 ' explain of count in excel
 Const EXPLAIN_OF_COUNT_IN_EXCEL = "count"
+
+' config of mode specify cell
+' file name of excel mode specify cell
+Const FILE_NAME_OF_EXCEL_MODE_SPECIFY_CELL = "UseSummary.xlsx"
+
+' is show excel window mode specify cell
+Const IS_SHOW_EXCEL_WINDOW_MODE_SPECIFY_CELL = true
+
+' number of first workbook mode specify cell
+Const NUMBER_OF_FIRST_WORKBOOK_MODE_SPECIFY_CELL = 1
+
+' number of first worksheet mode specify cell
+Const NUMBER_OF_FIRST_WORKSHEET_MODE_SPECIFY_CELL = 1
+
+' row of count normal price last 1 month cell mode specify cell
+Const ROW_OF_COUNT_NORMAL_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL = 4
+
+' column of count normal price last 1 month cell mode specify cell
+Const COLUMN_OF_COUNT_NORMAL_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL = 4
+
+' row of count discount price last 1 month cell mode specify cell
+Const ROW_OF_COUNT_DISCOUNT_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL = 4
+
+' column of count discount price last 1 month cell mode specify cell
+Const COLUMN_OF_COUNT_DISCOUNT_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL = 5
+
+' row of count normal price last 2 month cell mode specify cell
+Const ROW_OF_COUNT_NORMAL_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL = 4
+
+' column of count normal price last 2 month cell mode specify cell
+Const COLUMN_OF_COUNT_NORMAL_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL = 6
+
+' row of count discount price last 2 month cell mode specify cell
+Const ROW_OF_COUNT_DISCOUNT_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL = 4
+
+' column of count discount price last 2 month cell mode specify cell
+Const COLUMN_OF_COUNT_DISCOUNT_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL = 7
 
 
 '---------------------------------------

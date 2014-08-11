@@ -989,6 +989,27 @@ Function SetCellsOfExcel(objExcel, numberOfWorkBook, numberOfWorkSheet, nameOfCe
 End Function
 
 '*******************************************************************************
+' GetCellsOfExcel
+'   @param objExcel [in] object excel
+'   @param numberOfWorkBook [in] number of work book
+'   @param numberOfWorkSheet [in] number of work sheet
+'   @param nameOfCellRow [in] name of cell row
+'   @param nameOfCellColl [in] number of cell coll
+'   @retval nothing
+'*******************************************************************************
+Function GetCellsOfExcel(objExcel, numberOfWorkBook, numberOfWorkSheet, nameOfCellRow, nameOfCellColl)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetCellsOfExcel start")
+  
+  Dim out
+  
+  out = objExcel.Workbooks(numberOfWorkBook).Worksheets(numberOfWorkSheet).Cells(nameOfCellColl, nameOfCellRow)
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetCellsOfExcel end")
+  
+  GetCellsOfExcel = out
+End Function
+
+'*******************************************************************************
 ' SaveOfExcel
 '   @param objExcel [in] object excel
 '   @param numberOfWorkBook [in] number of work book
