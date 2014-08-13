@@ -861,6 +861,7 @@ Function GetKeyFromSingleHightWayUse(textOfSingleHightWayUse)
   Dim tollOfHightWayUseDeleteSpaceAndYen
   Dim tollOfHightWayUseDeleteSpace
   Dim tollOfHightWayUseParts
+  Dim paramsOfHightWayUseParts
   If UBound(inputBodyParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE10 Then
     ' valid format
     logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & inputBodyParts(NUMBER_OF_DATE_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_TIME_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_SECOND_GATE_AND_DATE_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE10) & inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE10))
@@ -876,9 +877,11 @@ Function GetKeyFromSingleHightWayUse(textOfSingleHightWayUse)
     tollOfHightWayUseDeleteSpaceAndYenAndConma = Replace(tollOfHightWayUseDeleteSpaceAndYen, DEFINE_DELIM_CANMA, DEFINE_BRANK)
     tollOfHightWayUseParts = Split(tollOfHightWayUseDeleteSpaceAndYenAndConma, DEFINE_SPACE)
     tollOfHightWayUse = tollOfHightWayUseParts(NUMBER_OF_TOLL_PARTS_IN_TOLL)
-    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & dateOfSecondGateHightWayUse & DEFINE_SPACE & timeOfSecondGateHightWayUse & DEFINE_SPACE & dateOfFirstGateHightWayUse & DEFINE_SPACE & timeOfFirstGateHightWayUse & DEFINE_SPACE & firstGateOfHightWayUse & DEFINE_SPACE & secondGateOfHightWayUse & DEFINE_SPACE & tollOfHightWayUse)
+    ' TODO
+    paramsOfHightWayUseParts = ""
+    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & dateOfSecondGateHightWayUse & DEFINE_SPACE & timeOfSecondGateHightWayUse & DEFINE_SPACE & dateOfFirstGateHightWayUse & DEFINE_SPACE & timeOfFirstGateHightWayUse & DEFINE_SPACE & firstGateOfHightWayUse & DEFINE_SPACE & secondGateOfHightWayUse & DEFINE_SPACE & tollOfHightWayUse & DEFINE_SPACE & paramsOfHightWayUseParts)
     
-    key = CreateKeyFromHightWayUseInfo(dateOfFirstGateHightWayUse, timeOfFirstGateHightWayUse, dateOfSecondGateHightWayUse, timeOfSecondGateHightWayUse, firstGateOfHightWayUse, secondGateOfHightWayUse, tollOfHightWayUse)
+    key = CreateKeyFromHightWayUseInfo(dateOfFirstGateHightWayUse, timeOfFirstGateHightWayUse, dateOfSecondGateHightWayUse, timeOfSecondGateHightWayUse, firstGateOfHightWayUse, secondGateOfHightWayUse, tollOfHightWayUse, paramsOfHightWayUseParts)
   ElseIf UBound(inputBodyParts) = NUMBER_OF_HIGHT_WAY_USE_PARTS_FOR_IE8 Then
     ' valid format
     logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & inputBodyParts(NUMBER_OF_DATE_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_TIME_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_SECOND_GATE_AND_DATE_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_TIME_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_FIRST_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_SECOND_GATE_HIGHT_WAY_USE_PARTS_FOR_IE8) & inputBodyParts(NUMBER_OF_TOLL_HIGHT_WAY_USE_PARTS_FOR_IE8))
@@ -894,9 +897,11 @@ Function GetKeyFromSingleHightWayUse(textOfSingleHightWayUse)
     tollOfHightWayUseDeleteSpaceAndYenAndConma = Replace(tollOfHightWayUseDeleteSpaceAndYen, DEFINE_DELIM_CANMA, DEFINE_BRANK)
     tollOfHightWayUseParts = Split(tollOfHightWayUseDeleteSpaceAndYenAndConma, DEFINE_SPACE)
     tollOfHightWayUse = tollOfHightWayUseParts(NUMBER_OF_TOLL_PARTS_IN_TOLL)
-    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & dateOfSecondGateHightWayUse & DEFINE_SPACE & timeOfSecondGateHightWayUse & DEFINE_SPACE & dateOfFirstGateHightWayUse & DEFINE_SPACE & timeOfFirstGateHightWayUse & DEFINE_SPACE & firstGateOfHightWayUse & DEFINE_SPACE & secondGateOfHightWayUse & DEFINE_SPACE & tollOfHightWayUse)
+    ' TODO
+    paramsOfHightWayUseParts = ""
+    logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "one of hight way use info: " & dateOfSecondGateHightWayUse & DEFINE_SPACE & timeOfSecondGateHightWayUse & DEFINE_SPACE & dateOfFirstGateHightWayUse & DEFINE_SPACE & timeOfFirstGateHightWayUse & DEFINE_SPACE & firstGateOfHightWayUse & DEFINE_SPACE & secondGateOfHightWayUse & DEFINE_SPACE & tollOfHightWayUse & DEFINE_SPACE & paramsOfHightWayUseParts)
     
-    key = CreateKeyFromHightWayUseInfo(dateOfFirstGateHightWayUse, timeOfFirstGateHightWayUse, dateOfSecondGateHightWayUse, timeOfSecondGateHightWayUse, firstGateOfHightWayUse, secondGateOfHightWayUse, tollOfHightWayUse)
+    key = CreateKeyFromHightWayUseInfo(dateOfFirstGateHightWayUse, timeOfFirstGateHightWayUse, dateOfSecondGateHightWayUse, timeOfSecondGateHightWayUse, firstGateOfHightWayUse, secondGateOfHightWayUse, tollOfHightWayUse, paramsOfHightWayUseParts)
   Else
     ' invalid format
     ' skip
@@ -917,13 +922,14 @@ End Function
 '   @param firstGate [in] first gate
 '   @param secondGate [in] second gate
 '   @param toll [in] toll
+'   @param params [in] param's
 '   @retval key
 '*******************************************************************************
-Function CreateKeyFromHightWayUseInfo(dateOfFirstGate, timeOfFirstGate, dateOfSecondGate, timeOfSecondGate, firstGate, secondGate, toll)
+Function CreateKeyFromHightWayUseInfo(dateOfFirstGate, timeOfFirstGate, dateOfSecondGate, timeOfSecondGate, firstGate, secondGate, toll, params)
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CreateKeyFromHightWayUseInfo start")
   
   Dim key
-  key = firstGate & DELIM_OF_GATE & secondGate & DELIM_OF_CATEGORY & toll & DELIM_OF_CATEGORY & dateOfFirstGate & DEFINE_SPACE & timeOfFirstGate & DELIM_OF_GATE_TIME & dateOfSecondGate & DEFINE_SPACE & timeOfSecondGate
+  key = firstGate & DELIM_OF_GATE & secondGate & DELIM_OF_CATEGORY & toll & DELIM_OF_CATEGORY & dateOfFirstGate & DEFINE_SPACE & timeOfFirstGate & DELIM_OF_GATE_TIME & dateOfSecondGate & DEFINE_SPACE & timeOfSecondGate & DELIM_OF_CATEGORY & params
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CreateKeyFromHightWayUseInfo key: " & key)
 
@@ -946,6 +952,8 @@ Function GetHightWayUseInfoFromKey(key)
   gateParts = Split(categoryParts(NUMBER_OF_GATE_AT_KEY), DELIM_OF_GATE)
   Dim dateTimeParts
   dateTimeParts = Split(categoryParts(NUMBER_OF_DATE_TIME_AT_KEY), DEFINE_SPACE)
+  Dim paramsParts
+  paramsParts = categoryParts(NUMBER_OF_PARAMS_AT_KEY)
   
   ' TODO
   ReDim Preserve hightWayUseInfo(NUMBER_OF_SUMMARY_SIZE)
@@ -954,6 +962,7 @@ Function GetHightWayUseInfoFromKey(key)
   hightWayUseInfo(NUMBER_OF_TOLL_AT_SUMMARY) = categoryParts(NUMBER_OF_TOLL_AT_KEY)
   hightWayUseInfo(NUMBER_OF_DATE_AT_SUMMARY) = dateTimeParts(0)
   hightWayUseInfo(NUMBER_OF_TIME_AT_SUMMARY) = dateTimeParts(1)
+  hightWayUseInfo(NUMBER_OF_PARAMS_AT_SUMMARY) = paramsParts
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetHightWayUseInfoFromKey end")
   
@@ -1034,7 +1043,7 @@ Function CreateKeyFromAuto20DayPerAMonth(useInfos)
   dateParts = Split(useInfos(NUMBER_OF_DATE_AT_SUMMARY), DELIM_OF_DATE_AT_ETC_SITE)
   
   Dim key
-  key = useInfos(NUMBER_OF_FIRST_GATE_AT_SUMMARY) & DELIM_OF_GATE & useInfos(NUMBER_OF_SECOND_GATE_AT_SUMMARY) & DELIM_OF_CATEGORY & useInfos(NUMBER_OF_TOLL_AT_SUMMARY) & DELIM_OF_CATEGORY & dateParts(NUMBER_OF_YEAR_AT_DATE) & DEFINE_SPACE & dateParts(NUMBER_OF_MONTH_AT_DATE)
+  key = useInfos(NUMBER_OF_FIRST_GATE_AT_SUMMARY) & DELIM_OF_GATE & useInfos(NUMBER_OF_SECOND_GATE_AT_SUMMARY) & DELIM_OF_CATEGORY & useInfos(NUMBER_OF_TOLL_AT_SUMMARY) & DELIM_OF_CATEGORY & dateParts(NUMBER_OF_YEAR_AT_DATE) & DEFINE_SPACE & dateParts(NUMBER_OF_MONTH_AT_DATE) & DELIM_OF_CATEGORY & useInfos(NUMBER_OF_PARAMS_AT_SUMMARY)
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CreateKeyFromAuto20DayPerAMonth end")
   
@@ -1154,10 +1163,12 @@ Function SaveSummaryOfListInExcel(filePath, summaryResult)
     Dim gates
     Dim toll
     Dim date
+    Dim params
     Dim count
-    gates = keyParts(0)
-    toll = keyParts(1)
-    date = keyParts(2)
+    gates = keyParts(NUMBER_OF_GATE_AT_KEY)
+    toll = keyParts(NUMBER_OF_TOLL_AT_KEY)
+    date = keyParts(NUMBER_OF_DATE_TIME_AT_KEY)
+    params = keyParts(NUMBER_OF_PARAMS_AT_KEY)
     count = summaryResult.Item(key)
     
     ' gates
@@ -1238,14 +1249,29 @@ Function SaveSummaryToSpecifyCellInExcel(filePath, periodParams, summaryResult)
     Dim gates
     Dim toll
     Dim date
+    Dim params
     Dim count
-    gates = keyParts(0)
-    toll = keyParts(1)
-    date = keyParts(2)
+    gates = keyParts(NUMBER_OF_GATE_AT_KEY)
+    toll = keyParts(NUMBER_OF_TOLL_AT_KEY)
+    date = keyParts(NUMBER_OF_DATE_TIME_AT_KEY)
+    params = keyParts(NUMBER_OF_PARAMS_AT_KEY)
     count = summaryResult.Item(key)
     
     Dim dateParts
     dateParts = Split(date, DEFINE_DELIM_DATE_TIME)
+    
+    ' TODO params
+    'Dim isDiscount
+    'isDiscount = False
+    'Dim dictOfParam
+    'Set dictOfParam = GetDictOfParams(params)
+    'If dictOfParam.Exists(KEY_OF_DISCOUNT_IN_PARAMS) = True Then
+    '  ' exist
+    '  isDiscount = True
+    'Else
+    '  ' don't exist
+    '  isDiscount = False
+    'End If
     
     Dim targetRow
     Dim targetColumn
@@ -1253,6 +1279,7 @@ Function SaveSummaryToSpecifyCellInExcel(filePath, periodParams, summaryResult)
       ' current month
       ' TODO 410(310)->normal, !410(310)->discownt
       If toll = 410 Or toll = 310 Then
+      'If isDiscount = False Then
         ' normal price
         targetRow = ROW_OF_COUNT_NORMAL_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL
         targetColumn = COLUMN_OF_COUNT_NORMAL_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL
@@ -1265,6 +1292,7 @@ Function SaveSummaryToSpecifyCellInExcel(filePath, periodParams, summaryResult)
       ' last month
       ' TODO 410(310)->normal, !410(310)->discownt
       If toll = 410 Or toll = 310 Then
+      'If isDiscount = False Then
         ' normal price
         targetRow = ROW_OF_COUNT_NORMAL_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL
         targetColumn = COLUMN_OF_COUNT_NORMAL_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL
@@ -1295,8 +1323,41 @@ Function GetRegexArray(regexStringOfConfig)
   Dim regexArray
   regexArray = Split(regexStringOfConfig, DEFINE_DELIM_CANMA)
   
-  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "CreateKeyFromAuto20DayPerAMonth end")
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetRegexArray end")
   
   GetRegexArray = regexArray
+End Function
+
+'*******************************************************************************
+' GetDictOfParams
+'   @param params [in] param's
+'   @retval param dictionary
+'*******************************************************************************
+Function GetDictOfParams(params)
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetDictOfParams start")
+  
+  Dim dict
+  
+  Dim entrysInParams
+  entrysInParams = Split(params, DELIM_OF_ENTRY_IN_PARAMS)
+  
+  Set dict = CreateObject(NAME_OF_SCRIPTING_DICTIONARY)
+  
+  Dim entryArray
+  Dim key
+  Dim value
+  For Each entry In entrysInParams
+    entryArray = Split(params, DELIM_OF_KEY_AND_VALUE_IN_PARAMS)
+    If Len(entryArray) = 2 Then
+      ' key and value
+      dict.Item(entryArray(0)) = entryArray(1)
+    Else
+      ' ignore
+    End If
+  Next
+  
+  logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "GetDictOfParams end")
+  
+  Set GetDictOfParams = dict
 End Function
 

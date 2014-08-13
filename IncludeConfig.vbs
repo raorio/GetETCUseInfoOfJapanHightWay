@@ -283,14 +283,20 @@ Const NUMBER_OF_TOLL_PARTS_IN_TOLL = 0
 ' delim of category
 Const DELIM_OF_CATEGORY = ","
 
-' delim of GATE
+' delim of gate
 Const DELIM_OF_GATE = "-"
 
-' delim of DATE_TIME
+' delim of date time
 Const DELIM_OF_GATE_TIME = "-"
 
+' delim of key and value in param's
+Const DELIM_OF_KEY_AND_VALUE_IN_PARAMS = "==="
+
+' delim of entry(key and value)'s in param's
+Const DELIM_OF_ENTRY_IN_PARAMS = "<<<>>>"
+
 ' number of key size
-Const NUMBER_OF_KEY_SIZE = 3
+Const NUMBER_OF_KEY_SIZE = 4
 
 ' number of gate at key
 Const NUMBER_OF_GATE_AT_KEY = 0
@@ -300,6 +306,9 @@ Const NUMBER_OF_TOLL_AT_KEY = 1
 
 ' number of date time at key
 Const NUMBER_OF_DATE_TIME_AT_KEY = 2
+
+' number of param's at key
+Const NUMBER_OF_PARAMS_AT_KEY = 3
 
 ' number of gate size
 Const NUMBER_OF_GATE_SIZE = 2
@@ -332,7 +341,7 @@ Const NUMBER_OF_MONTH_AT_DATE = 1
 Const NUMBER_OF_DAY_AT_DATE = 2
 
 ' number of summary size
-Const NUMBER_OF_SUMMARY_SIZE = 5
+Const NUMBER_OF_SUMMARY_SIZE = 6
 
 ' number of first gate at summary
 Const NUMBER_OF_FIRST_GATE_AT_SUMMARY = 0
@@ -349,6 +358,9 @@ Const NUMBER_OF_DATE_AT_SUMMARY = 3
 ' number of time at summary
 Const NUMBER_OF_TIME_AT_SUMMARY = 4
 
+' number of param's at summary
+Const NUMBER_OF_PARAMS_AT_SUMMARY = 5
+
 ' delim of date at etc site
 Const DELIM_OF_DATE_AT_ETC_SITE = "/"
 
@@ -363,6 +375,9 @@ Const EXPLAIN_OF_DATE_IN_SUMMARY = "date"
 
 ' explain of count in summary
 Const EXPLAIN_OF_COUNT_IN_SUMMARY = "count"
+
+' key of discount in param's
+Const KEY_OF_DISCOUNT_IN_PARAMS = "DISCOUNT"
 
 
 '---------------------------------------

@@ -35,3 +35,17 @@ api sequense
 
 	IncludeCommonAPI.vbs
 
+data context
+	useResult
+		dictionary object
+		key: <gate first>-<gate second>,<toll>,<year>/<month>/<day> <hour>:<minute>-<year>/<month>/<day> <hour>:<minute>,<param key and value>
+			ex: è¿ìcè„ÇË-,410,14/06/23 20:18- ,
+		value: True/False
+			True: find use
+			False: don't find use
+	summaryResult
+		dictionary object
+		key: <gate first>-<gate second>,<toll>,<year> <month>,<param key and value>
+			ex: è¿ìcè„ÇË-,410,14 07,
+		value: count
+			ex: 12
