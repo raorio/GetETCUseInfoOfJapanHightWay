@@ -712,11 +712,7 @@ Function CheckHightWayUse(objElement)
       Dim version
       version = GetIEVersion(objElement)
       
-      If version = NUMBER_OF_IE10_VERSION Then
-        funcDummy = objElement.SetAttribute(NAME_OF_CHECKED, NAME_OF_CHECKED_VALUE)
-      ElseIf version = NUMBER_OF_IE8_VERSION Then
-        objElement.Click()
-      End If
+      objElement.Checked = True
     Else
       ' not match
     End If
@@ -775,11 +771,8 @@ Function ParseBodyOfHtml(bodyOfHtml, objIE, useResult)
     typeName = objInputTags(indexOfInput).getAttribute(NAME_OF_ATTRIBUTE_TYPE)
     If typeName = NAME_OF_CHECK_BOX Then
       Dim isCheckedAttribute
-      isCheckedAttribute = objInputTags(indexOfInput).getAttribute(NAME_OF_CHECKED)
-      ' if detect by true/false or checked value, don't detect checked. there for check by not brank
-      If isCheckedAttribute <> DEFINE_BRANK And isCheckedAttribute <> False Then
-      'If isCheckedAttribute = NAME_OF_CHECKED_VALUE Then
-      'If isCheckedAttribute = True Then
+      isCheckedAttribute = objInputTags(indexOfInput).Checked
+      If isCheckedAttribute = True Then
         Dim key
         key = GetKeyFromBodyOfHtml(objInputTags(indexOfInput))
         

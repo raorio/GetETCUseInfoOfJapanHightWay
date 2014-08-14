@@ -1,3 +1,11 @@
+TODO
+	募金のお願い
+	初期設定強化
+	エラー強化
+	料金の割引き区別
+		時間帯や曜日で区別するしかない?
+	リファクタリング
+
 
 api sequense
 	GetETCUseInfoOfJapanHightWay():Main.vbs
@@ -34,6 +42,7 @@ api sequense
 						TODO:開発中
 
 	IncludeCommonAPI.vbs
+
 
 data context
 	useResult
