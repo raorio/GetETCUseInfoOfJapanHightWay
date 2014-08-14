@@ -27,6 +27,12 @@ setup
         追加 -> 閉じる -> OK
 
 
+ライセンス
+  自由に使用、再配布、改造してください。
+  ただし、本ツールにより発生した問題に対し、
+  作成者側はいかなる責任もおえませんので、ご了承ください。
+
+
 special thanks
   ujihara san, who created concat pdf
 
