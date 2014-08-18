@@ -207,7 +207,7 @@ Function GetETCUseInfoOfJapanHightWay()
       Set mainIEObj = Nothing
       
       If IS_SHOW_FINISHED_CALC_PER_INFO = true Then
-        MsgBox "以下に結果を保存しました。" & DefineCrLr & strSaveFolderPath
+        MsgBox "以下に「" & carNumber & DEFINE_DELIM_CANMA & icCardNumber & DEFINE_DELIM_CANMA & otherInfo & "」結果を保存しました。" & DefineCrLr & strSaveFolderPath
       End If
     End If
   Next
