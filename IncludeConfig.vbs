@@ -449,25 +449,25 @@ Const NUMBER_OF_FIRST_WORKSHEET_MODE_SPECIFY_CELL = 1
 Const ROW_OF_COUNT_NORMAL_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL = 4
 
 ' column of count normal price last 1 month cell mode specify cell
-Const COLUMN_OF_COUNT_NORMAL_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL = 4
+Const COLUMN_OF_COUNT_NORMAL_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL = 22
 
 ' row of count discount price last 1 month cell mode specify cell
 Const ROW_OF_COUNT_DISCOUNT_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL = 4
 
 ' column of count discount price last 1 month cell mode specify cell
-Const COLUMN_OF_COUNT_DISCOUNT_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL = 5
+Const COLUMN_OF_COUNT_DISCOUNT_PRICE_LAST_1_MONTH_CELL_MODE_SPECIFY_CELL = 21
 
 ' row of count normal price last 2 month cell mode specify cell
 Const ROW_OF_COUNT_NORMAL_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL = 4
 
 ' column of count normal price last 2 month cell mode specify cell
-Const COLUMN_OF_COUNT_NORMAL_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL = 6
+Const COLUMN_OF_COUNT_NORMAL_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL = 28
 
 ' row of count discount price last 2 month cell mode specify cell
 Const ROW_OF_COUNT_DISCOUNT_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL = 4
 
 ' column of count discount price last 2 month cell mode specify cell
-Const COLUMN_OF_COUNT_DISCOUNT_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL = 7
+Const COLUMN_OF_COUNT_DISCOUNT_PRICE_LAST_2_MONTH_CELL_MODE_SPECIFY_CELL = 27
 
 
 '---------------------------------------
@@ -491,7 +491,8 @@ Const SAVE_SUFFIX_OF_USE_CONTEXT_PDF = ".pdf"
 ' concat pdf
 '-------------------
 ' is do concat pdf
-Const IS_DO_CONCAT_PDF = True
+'Const IS_DO_CONCAT_PDF = True
+Const IS_DO_CONCAT_PDF = False
 
 
 '-------------------

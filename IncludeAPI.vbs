@@ -200,10 +200,7 @@ Function GetETCUseInfoOfJapanHightWay()
       ExecAndWaitCommand("cmd /c move /Y " & strScriptPath & "*.pdf " & strSaveFolderPath & DEFINE_DELIM_FOLDER)
       
       If IS_SAVE_EXCEL = True Then
-        Dim strSaveExcelPath
-        strSaveExcelPath = strSaveFolderPath & DEFINE_DELIM_FOLDER & FILE_NAME_OF_EXCEL
-        ExecAndWaitCommand("cmd /c copy /Y " & strScriptPath & FILE_NAME_OF_EXCEL & DEFINE_SPACE & strSaveExcelPath)
-        funcDummy = SaveSummaryInExcel(strSaveExcelPath, periodParams, summaryResult)
+        funcDummy = SaveSummaryInExcel(strScriptPath, strSaveFolderPath, periodParams, summaryResult)
       End If
       
       Set mainIEObj = Nothing
@@ -1103,18 +1100,25 @@ End Function
 
 '*******************************************************************************
 ' SaveSummaryInExcel
-'   @param filePath [in] file path
+'   @param scriptPath [in] script path
+'   @param saveFolderPath [in] save folder path
 '   @param periodParams [in] period param's
 '   @param summaryResult [in] summary
 '   @retval key
 '*******************************************************************************
-Function SaveSummaryInExcel(filePath, periodParams, summaryResult)
+Function SaveSummaryInExcel(scriptPath, saveFolderPath, periodParams, summaryResult)
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SaveSummaryInExcel start")
   
+  Dim strSaveExcelPath
+  
   If MODE_OF_SAVE_EXCEL = MODE_OF_SAVE_EXCEL_SPECIFY_CELL Then
-    funcDummy = SaveSummaryToSpecifyCellInExcel(filePath, periodParams, summaryResult)
+    strSaveExcelPath = saveFolderPath & DEFINE_DELIM_FOLDER & FILE_NAME_OF_EXCEL_MODE_SPECIFY_CELL
+    ExecAndWaitCommand("cmd /c copy /Y " & scriptPath & FILE_NAME_OF_EXCEL_MODE_SPECIFY_CELL & DEFINE_SPACE & strSaveExcelPath)
+    funcDummy = SaveSummaryToSpecifyCellInExcel(strSaveExcelPath, periodParams, summaryResult)
   Else
-    funcDummy = SaveSummaryOfListInExcel(filePath, summaryResult)
+    strSaveExcelPath = saveFolderPath & DEFINE_DELIM_FOLDER & FILE_NAME_OF_EXCEL
+    ExecAndWaitCommand("cmd /c copy /Y " & scriptPath & FILE_NAME_OF_EXCEL & DEFINE_SPACE & strSaveExcelPath)
+    funcDummy = SaveSummaryOfListInExcel(strSaveExcelPath, summaryResult)
   End If
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "SaveSummaryInExcel end")
