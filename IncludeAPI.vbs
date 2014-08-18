@@ -203,6 +203,7 @@ Function GetETCUseInfoOfJapanHightWay()
         funcDummy = SaveSummaryInExcel(strScriptPath, strSaveFolderPath, periodParams, summaryResult)
       End If
       
+      mainIEObj.Quit
       Set mainIEObj = Nothing
       
       If IS_SHOW_FINISHED_CALC_PER_INFO = true Then
@@ -560,6 +561,8 @@ Function RequestAndParsePage(objIE, sequenceNumber, useResult)
     Dim locationURL
     locationURL = objPDFOfIE.LocationURL
     funcDummy = GetHttp(locationURL, SAVE_PREFIX_OF_USE_CONTEXT_PDF & sequenceNumber & SAVE_SUFFIX_OF_USE_CONTEXT_PDF, PROXY_SERVER)
+    
+    objPDFOfIE.Quit
   End If
   
   logReturnValueDummy = logOutDebug(LOG_TARGET_LEVEL, "RequestAndParsePage end")
