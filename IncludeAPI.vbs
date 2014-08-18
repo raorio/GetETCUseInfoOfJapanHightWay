@@ -204,6 +204,10 @@ Function GetETCUseInfoOfJapanHightWay()
       End If
       
       Set mainIEObj = Nothing
+      
+      If IS_SHOW_FINISHED_CALC_PER_INFO = true Then
+        MsgBox "à»â∫Ç…åãâ Çï€ë∂ÇµÇ‹ÇµÇΩÅB" & DefineCrLr & strSaveFolderPath
+      End If
     End If
   Next
   

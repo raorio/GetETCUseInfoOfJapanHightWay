@@ -150,6 +150,10 @@ Const IS_SHOW_MAIN_WEB_GUI = true
 ' is conform before hight way use determ
 Const IS_CONFORM_BEFORE_HIGHT_WAY_USE_DETERM = true
 
+' is show finished calc per info
+Const IS_SHOW_FINISHED_CALC_PER_INFO = true
+'Const IS_SHOW_FINISHED_CALC_PER_INFO = false
+
 '---------------------------------------
 ' etc site parameter
 '---------------------------------------
